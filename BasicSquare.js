@@ -25,15 +25,12 @@ class BasicCircle extends Component {
       tagetOpened: false,
       innerCircle: {
         height: 0,
-        width: 0,
-        borderRadius: 0
+        width: 0
       },
       targetCircle: {
         height: 50,
         width: 50,
-        borderRadius: 25,
-        borderColor: 'blue',
-        borderWidth: 5,
+        borderColor: 'blue'
       }
     };
   }
@@ -45,16 +42,15 @@ class BasicCircle extends Component {
   pulse() {
     let callback = this.continuePulse.bind(this);
     let animated = LayoutAnimation.Presets.spring
-    let size = this.state.innerCircle.width
-    let newWidth = size > 40 ? 40 : 46
+    let width = this.state.innerCircle.width
+    let newWidth = width > 40 ? 40 : 46
     if(!this.state.targetOpened) { newWidth = 0 }
     animated.duration = Math.floor(Math.random() * 1000) + 400
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       innerCircle: {
         height: newWidth,
-        width: newWidth,
-        borderRadius: size > 40 ? 20 : 23
+        width: newWidth
       },
     })
   }
@@ -66,9 +62,7 @@ class BasicCircle extends Component {
         targetCircle: {
           height: basicWidth,
           width: basicWidth,
-          borderRadius: basicWidth/2,
-          borderColor: 'blue',
-          borderWidth: 5,
+          borderColor: 'blue'
         }
       })
     }
@@ -82,7 +76,7 @@ class BasicCircle extends Component {
     if(result) {
       this.borderOut()
     }else {
-      let callback = this.resetTarget.bind(this)
+      let callback = console.log('DONE');
       let animated = LayoutAnimation.Presets.easeInEaseOut
       animated.duration = 300
       LayoutAnimation.configureNext(animated, callback);
@@ -90,30 +84,10 @@ class BasicCircle extends Component {
         txt: 'failiure',
         innerCircle: {
           height: 40,
-          width: 40,
-          borderRadius: 20
+          width: 40
         },
-        targetCircle: {
-          height: basicWidth,
-          width: basicWidth,
-          borderRadius: basicWidth/2,
-          borderColor: 'red',
-          borderWidth: 5,
-        }
       })
     }
-  }
-
-  resetTarget() {
-    this.setState({
-            targetCircle: {
-              height: basicWidth,
-              width: basicWidth,
-              borderRadius: basicWidth/2,
-              borderColor: 'blue',
-              borderWidth: 5,
-            }
-          });
   }
 
   borderOut() {
@@ -125,9 +99,7 @@ class BasicCircle extends Component {
       targetCircle: {
         height: basicWidth + 20,
         width: basicWidth + 20,
-        borderRadius: (basicWidth + 20) / 2,
-        borderColor: 'white',
-        borderWidth: 25,
+        borderColor: 'green'
       },
     })
   }
@@ -141,9 +113,7 @@ class BasicCircle extends Component {
       targetCircle: {
         height: basicWidth,
         width: basicWidth,
-        borderRadius: basicWidth/2,
-        borderColor: 'blue',
-        borderWidth: 5,
+        borderColor: 'green'
       }
     })
     this.props.updateScore(1)
@@ -154,8 +124,8 @@ class BasicCircle extends Component {
   }
 
   growCircle() {
-    let size = this.state.innerCircle.height
-    let borderRadius = this.state.innerCircle.borderRadius
+    let height = this.state.innerCircle.height
+    let width = this.state.innerCircle.width
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 10
     let callback = this.growMore.bind(this);
@@ -163,27 +133,25 @@ class BasicCircle extends Component {
     if(this.state.pressed) {
       this.setState({
         innerCircle: {
-          height: size + 5,
-          width: size + 5,
-          borderRadius: borderRadius + 2.5
+          height: height + 5,
+          width: width + 5
         },
       })
     }
   }
 
   shrinkCircle() {
-    let size = this.state.innerCircle.height
-    let borderRadius = this.state.innerCircle.borderRadius
+    let height = this.state.innerCircle.height
+    let width = this.state.innerCircle.width
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 15
     let callback = this.shrinkMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       innerCircle: {
-        height: size - 20,
-        width: size - 20,
-        borderRadius: borderRadius - 10
-      }
+        height: height - 20,
+        width: width - 20
+      },
     })
   }
 
@@ -192,19 +160,7 @@ class BasicCircle extends Component {
   }
 
   shrinkMore() {
-    if(this.state.innerCircle.width > 40) {
-      this.shrinkCircle()
-    }else {
-      this.setState({
-        cleanSlate: true,
-        innerCircle: {
-          height: 40,
-          width: 40,
-          borderRadius: 20
-        }
-      })
-      this.pulse()
-    }
+    if(this.state.innerCircle.width > 40) { this.shrinkCircle() }
   }
 
   render() {
@@ -213,15 +169,18 @@ class BasicCircle extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.viewText}>{this.state.txt}</Text>
-
         <View style={targetCircle} >
+
           <Animated.View style={styles.container}>
             <TouchableWithoutFeedback
               onPressIn={this.handlePressIn.bind(this)}
               onPressOut={this.handlePressOut.bind(this)}>
-              <View style={innerCircle}></View>
+              <View style={innerCircle}>
+
+              </View>
             </TouchableWithoutFeedback>
           </Animated.View>
+
         </View>
 
       </View>
@@ -245,13 +204,14 @@ const styles = StyleSheet.create({
   view1: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: 'black',
     margin: 20
   },
   viewText: {
-    color: 'yellow'
+    color: 'black'
   },
   target1: {
+    borderWidth: 5,
     backgroundColor: 'transparent'
   }
 });

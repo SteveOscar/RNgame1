@@ -1,4 +1,6 @@
+let StartScreen = require('./StartScreen')
 let BasicCircle = require('./BasicCircle')
+let BasicSquare = require('./BasicSquare')
 
 import React, { Component } from 'react';
 import {
@@ -16,7 +18,13 @@ class game1 extends Component {
     super(props);
     this.state = {
       score: 0,
+      level: 1,
+      gameStarted: false
     };
+  }
+
+  startGame() {
+    this.setState({ gameStarted: true })
   }
 
   updateScore(points) {
@@ -25,11 +33,14 @@ class game1 extends Component {
   }
 
   render() {
+    let component = this.state.gameStarted ? <BasicCircle updateScore={this.updateScore.bind(this)}/> : <StartScreen startGame={this.startGame.bind(this)}/>
     let score = this.state.score
     return (
       <View style={styles.container}>
-        <BasicCircle updateScore={this.updateScore.bind(this)}/>
-        <Text>Score: {score}</Text>
+        {component}
+        {/*<BasicCircle updateScore={this.updateScore.bind(this)}/>
+        <BasicSquare updateScore={this.updateScore.bind(this)}/>*/}
+        <Text style={styles.text}>Score: {score}</Text>
       </View>
     );
   }
@@ -39,8 +50,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'black'
   },
+  text: {
+    color: 'red'
+  }
 });
 
 AppRegistry.registerComponent('game1', () => game1);
