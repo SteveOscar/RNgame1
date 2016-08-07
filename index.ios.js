@@ -27,17 +27,66 @@ class game1 extends Component {
     this.state = {
       txt: '',
       pressed: false,
-      viewStyle: {
+      innerCircle: {
         height: 20,
         width: 20,
         borderRadius: 10
+      },
+      targetCircle: {
+        height: 100,
+        width: 100,
+        borderRadius: 50
       }
     };
   }
 
   handlePressOut() {
     console.log('unPRESSED')
-    this.setState({ pressed: false })
+    const result = (100 - this.state.innerCircle.width < 10) && (100 - this.state.innerCircle.width > -5)
+    let message = result ? 'success' : ''
+    this.setState({ pressed: false, txt: message })
+    if(result) {
+      this.borderOut()
+    }else {
+      let callback = console.log('DONE');
+      let animated = LayoutAnimation.Presets.spring
+      animated.duration = 300
+      LayoutAnimation.configureNext(animated, callback);
+      this.setState({
+        innerCircle: {
+          height: 20,
+          width: 20,
+          borderRadius: 10
+        },
+      })
+    }
+  }
+
+  borderOut() {
+    let callback = this.borderIn.bind(this);
+    let animated = LayoutAnimation.Presets.linear
+    animated.duration = 300
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      targetCircle: {
+        height: 120,
+        width: 120,
+        borderRadius: 60
+      },
+    })
+  }
+
+  borderIn() {
+    let animated = LayoutAnimation.Presets.spring
+    animated.duration = 500
+    LayoutAnimation.configureNext(animated, console.log('done'));
+    this.setState({
+      targetCircle: {
+        height: 100,
+        width: 100,
+        borderRadius: 50
+      },
+    })
   }
 
   handlePressIn() {
@@ -45,9 +94,9 @@ class game1 extends Component {
   }
 
   updateAnimation() {
-    let height = this.state.viewStyle.height
-    let width = this.state.viewStyle.width
-    let borderRadius = this.state.viewStyle.borderRadius
+    let height = this.state.innerCircle.height
+    let width = this.state.innerCircle.width
+    let borderRadius = this.state.innerCircle.borderRadius
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 15
     let callback = this.growMore.bind(this);
@@ -55,11 +104,11 @@ class game1 extends Component {
     LayoutAnimation.configureNext(animated, callback);
     if(this.state.pressed) {
       this.setState({
-        viewStyle: {
+        innerCircle: {
           height: height + 5,
           width: width + 5,
           borderRadius: borderRadius + 2.5
-        }
+        },
       })
     }
   }
@@ -70,23 +119,25 @@ class game1 extends Component {
   }
 
   render() {
-    let viewStyle = [styles.view1, this.state.viewStyle]
+    let innerCircle = [styles.view1, this.state.innerCircle]
+    let targetCircle = [styles.target1, this.state.targetCircle]
     return (
       <View style={styles.container}>
 
+        <View style={targetCircle} >
 
-
-        <View style={styles.target1} >
           <Animated.View style={styles.container}>
             <TouchableWithoutFeedback
               onPressIn={this.handlePressIn.bind(this)}
               onPressOut={this.handlePressOut.bind(this)}>
-              <View style={viewStyle}>
+              <View style={innerCircle}>
                 <Text style={styles.viewText}>{this.state.txt}</Text>
               </View>
             </TouchableWithoutFeedback>
           </Animated.View>
+
         </View>
+
       </View>
 
 
@@ -117,10 +168,7 @@ const styles = StyleSheet.create({
   target1: {
     borderColor: 'red',
     borderWidth: 3,
-    backgroundColor: 'transparent',
-    width: 100,
-    height: 100,
-    borderRadius: 50
+    backgroundColor: 'transparent'
   }
 });
 
