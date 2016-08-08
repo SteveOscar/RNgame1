@@ -1,5 +1,6 @@
 let StartScreen = require('./StartScreen')
 let BasicCircle = require('./BasicCircle')
+let LayeredCircle = require('./LayeredCircle')
 let BasicSquare = require('./BasicSquare')
 
 import React, { Component } from 'react';
@@ -37,9 +38,8 @@ class game1 extends Component {
     let score = this.state.score
     return (
       <View style={styles.container}>
-        {component}
-        {/*<BasicCircle updateScore={this.updateScore.bind(this)}/>
-        <BasicSquare updateScore={this.updateScore.bind(this)}/>*/}
+        {/*{component}*/}
+        <LayeredCircle updateScore={this.updateScore.bind(this)}/>
         <Text style={styles.text}>Score: {score}</Text>
       </View>
     );
