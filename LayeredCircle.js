@@ -14,38 +14,69 @@ import {
 
 let basicWidth = Dimensions.get('window').width * .85
 
+let newRoundState = {
+  txt: '',
+  pressed: false,
+  cleanSlate: true,
+  tagetOpened: true,
+  layer: 1,
+  checkInnerLayer: false,
+  shrinking: false,
+  innerCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 40
+  },
+  targetCircle: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    borderColor: 'blue',
+    borderWidth: 5,
+  },
+  targetCircle2: {
+    height: basicWidth / 3,
+    width: basicWidth / 3,
+    borderRadius: (basicWidth / 3) / 2,
+    borderColor: 'blue',
+    borderWidth: 5,
+  }
+};
+
+let stateObj =  {
+  txt: '',
+  pressed: false,
+  cleanSlate: true,
+  tagetOpened: false,
+  layer: 1,
+  checkInnerLayer: false,
+  shrinking: false,
+  innerCircle: {
+    height: 0,
+    width: 0,
+    borderRadius: 0
+  },
+  targetCircle: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    borderColor: 'blue',
+    borderWidth: 5,
+  },
+  targetCircle2: {
+    height: basicWidth / 3,
+    width: basicWidth / 3,
+    borderRadius: (basicWidth / 3) / 2,
+    borderColor: 'blue',
+    borderWidth: 5,
+  }
+};
+
 class LayeredCircle extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      txt: '',
-      pressed: false,
-      cleanSlate: true,
-      tagetOpened: false,
-      layer: 1,
-      checkInnerLayer: false,
-      shrinking: false,
-      innerCircle: {
-        height: 0,
-        width: 0,
-        borderRadius: 0
-      },
-      targetCircle: {
-        height: 50,
-        width: 50,
-        borderRadius: 25,
-        borderColor: 'blue',
-        borderWidth: 5,
-      },
-      targetCircle2: {
-        height: basicWidth / 3,
-        width: basicWidth / 3,
-        borderRadius: (basicWidth / 3) / 2,
-        borderColor: 'blue',
-        borderWidth: 5,
-      }
-    };
+    this.state = stateObj
   }
 
   componentDidMount() {
@@ -86,6 +117,7 @@ class LayeredCircle extends Component {
   }
 
   handlePressOut() {
+    if(this.state.layer === 2) { return }
     const result = (basicWidth - this.state.innerCircle.width < 10) && (basicWidth - this.state.innerCircle.width > -5)
     let message = result ? 'success' : ''
     this.setState({ pressed: false, txt: '' })
@@ -117,14 +149,14 @@ class LayeredCircle extends Component {
 
   resetTarget() {
     this.setState({
-            targetCircle: {
-              height: basicWidth,
-              width: basicWidth,
-              borderRadius: basicWidth/2,
-              borderColor: 'blue',
-              borderWidth: 5,
-            }
-          });
+      targetCircle: {
+        height: basicWidth,
+        width: basicWidth,
+        borderRadius: basicWidth/2,
+        borderColor: 'blue',
+        borderWidth: 5,
+      }
+    });
   }
 
   borderOut(target) {
@@ -149,7 +181,6 @@ class LayeredCircle extends Component {
     animated.duration = 100
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
-      txt: 'success!',
       checkInnerLayer: true,
       targetCircle: {
         height: basicWidth,
@@ -159,6 +190,7 @@ class LayeredCircle extends Component {
         borderWidth: 5,
       }
     })
+    this.resetTarget2.bind(this)
     this.props.updateScore(1)
   }
 
@@ -197,6 +229,7 @@ class LayeredCircle extends Component {
     let callback = this.shrinkMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
+      layer: 2,
       shrinking: true,
       innerCircle: {
         height: size - 10,
@@ -214,26 +247,55 @@ class LayeredCircle extends Component {
     if(this.state.innerCircle.width > 40) {
       this.shrinkCircle()
     }else {
-      this.setState({
-        cleanSlate: true,
-        innerCircle: {
-          height: 40,
-          width: 40,
-          borderRadius: 20
-        }
-      })
-      this.pulse()
+      if(this.state.layer === 2 && this.state.txt === 'success') {
+        this.setState({
+          txt: '',
+          pressed: false,
+          cleanSlate: true,
+          tagetOpened: true,
+          layer: 1,
+          checkInnerLayer: false,
+          shrinking: false,
+          innerCircle: {
+            height: 20,
+            width: 20,
+            borderRadius: 40
+          },
+          targetCircle: {
+            height: 50,
+            width: 50,
+            borderRadius: 25,
+            borderColor: 'blue',
+            borderWidth: 5,
+          },
+          targetCircle2: {
+            height: basicWidth / 3,
+            width: basicWidth / 3,
+            borderRadius: (basicWidth / 3) / 2,
+            borderColor: 'blue',
+            borderWidth: 5,
+          }
+        },this.props.updateCompLevel(1))
+      }else {
+        this.setState({
+          cleanSlate: true,
+          innerCircle: {
+            height: 40,
+            width: 40,
+            borderRadius: 20
+          }
+        })
+        this.pulse()
+      }
     }
   }
 
   checkInnerLayer() {
     let targetSize = this.state.targetCircle2.width
     let pupil = this.state.innerCircle.width
-    let result = (targetSize - pupil < 10) && (targetSize - pupil > -5)
-    let message = result ? 'success' : ''
+    let result = (targetSize - pupil < 20) && (targetSize - pupil > -15)
     if(result) {
-      this.setState({ layer: this.state.layer + 1 })
-      this.borderOut('targetCircle2')
+      this.setState({ txt: 'success' }, this.borderOut('targetCircle2'))
     }else {
       let callback = this.resetTarget2.bind(this)
       let animated = LayoutAnimation.Presets.easeInEaseOut
@@ -241,6 +303,7 @@ class LayeredCircle extends Component {
       LayoutAnimation.configureNext(animated, callback);
       this.setState({
         txt: 'failiure',
+        layer: 1,
         innerCircle: {
           height: 40,
           width: 40,
@@ -277,6 +340,7 @@ class LayeredCircle extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.viewText}>{this.state.txt}</Text>
+        <Text style={styles.viewText}>Level Progress {this.props.compLevel}/3</Text>
 
 
         <View style={targetCircle} >

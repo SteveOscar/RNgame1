@@ -20,6 +20,7 @@ class game1 extends Component {
     this.state = {
       score: 0,
       level: 1,
+      compLevel: 0,
       gameStarted: false
     };
   }
@@ -33,13 +34,18 @@ class game1 extends Component {
     this.setState({ score: currentScore + points })
   }
 
+  updateCompLevel(points) {
+    currentLevel = this.state.compLevel
+    this.setState({ compLevel: currentLevel + points })
+  }
+
   render() {
     let component = this.state.gameStarted ? <BasicCircle updateScore={this.updateScore.bind(this)}/> : <StartScreen startGame={this.startGame.bind(this)}/>
     let score = this.state.score
     return (
       <View style={styles.container}>
         {/*{component}*/}
-        <LayeredCircle updateScore={this.updateScore.bind(this)}/>
+        <LayeredCircle updateScore={this.updateScore.bind(this)} updateCompLevel={this.updateCompLevel.bind(this)} compLevel={this.state.compLevel}/>
         <Text style={styles.text}>Score: {score}</Text>
       </View>
     );

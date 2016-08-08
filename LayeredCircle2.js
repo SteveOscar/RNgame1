@@ -14,7 +14,7 @@ import {
 
 let basicWidth = Dimensions.get('window').width * .75
 
-class BasicCircle extends Component {
+class LayeredCircle2 extends Component {
 
   constructor(props) {
     super(props);
@@ -23,6 +23,8 @@ class BasicCircle extends Component {
       pressed: false,
       cleanSlate: true,
       tagetOpened: false,
+      checkInnerLayer: false,
+      shrinking: false,
       innerCircle: {
         height: 0,
         width: 0,
@@ -32,6 +34,13 @@ class BasicCircle extends Component {
         height: 50,
         width: 50,
         borderRadius: 25,
+        borderColor: 'blue',
+        borderWidth: 5,
+      },
+      targetCircle2: {
+        height: basicWidth / 3,
+        width: basicWidth / 3,
+        borderRadius: (basicWidth / 3) / 2,
         borderColor: 'blue',
         borderWidth: 5,
       }
@@ -179,10 +188,11 @@ class BasicCircle extends Component {
     let callback = this.shrinkMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
+      shrinking: true,
       innerCircle: {
-        height: size - 20,
-        width: size - 20,
-        borderRadius: borderRadius - 10
+        height: size - 10,
+        width: size - 10,
+        borderRadius: borderRadius - 5
       }
     })
   }
@@ -217,19 +227,26 @@ class BasicCircle extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.viewText}>{this.state.txt}</Text>
+        <Text style={styles.viewText}>Level Progress {this.props.compLevel}/3</Text>
+
 
         <View style={targetCircle} >
           <Animated.View style={styles.container}>
+
             <TouchableWithoutFeedback
               onPressIn={this.handlePressIn.bind(this)}
               onPressOut={this.handlePressOut.bind(this)}>
-              <View style={innerCircle}></View>
+
+              <View style={innerCircle}>
+                <View style={this.state.targetCircle2}></View>
+              </View>
+
             </TouchableWithoutFeedback>
+
           </Animated.View>
         </View>
 
       </View>
-
 
     );
   }
@@ -241,11 +258,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  targetContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   view1: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -253,11 +265,13 @@ const styles = StyleSheet.create({
     margin: 20
   },
   viewText: {
-    color: 'yellow'
+    fontSize: 20,
+    color: 'white',
+    marginBottom: 15
   },
   target1: {
     backgroundColor: 'transparent'
   }
 });
 
-module.exports = BasicCircle;
+module.exports = LayeredCircle2;
