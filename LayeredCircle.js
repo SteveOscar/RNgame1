@@ -119,8 +119,7 @@ class LayeredCircle extends Component {
   handlePressOut() {
     if(this.state.layer === 2) { return }
     const result = (basicWidth - this.state.innerCircle.width < 10) && (basicWidth - this.state.innerCircle.width > -5)
-    let message = result ? 'success' : ''
-    this.setState({ pressed: false, txt: '' })
+    this.setState({ pressed: false })
     if(result) {
       this.setState({ layer: this.state.layer + 1 })
       this.borderOut('targetCircle')
@@ -190,12 +189,13 @@ class LayeredCircle extends Component {
         borderWidth: 5,
       }
     })
+    if(this.state.txt === 'success') { this.resetBoard() }
     this.resetTarget2.bind(this)
     this.props.updateScore(1)
   }
 
   handlePressIn() {
-    if(this.state.checkInnerLayer) {
+    if(this.state.checkInnerLayer && this.state.shrinking) {
       if(this.state.shrinking) { this.setState({ txt: '' }) }
       this.checkInnerLayer()
     }else {
@@ -210,15 +210,13 @@ class LayeredCircle extends Component {
     animated.duration = 10
     let callback = this.growMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
-    if(this.state.pressed) {
-      this.setState({
-        innerCircle: {
-          height: size + 5,
-          width: size + 5,
-          borderRadius: borderRadius + 2.5
-        },
-      })
-    }
+    this.setState({
+      innerCircle: {
+        height: size + 5,
+        width: size + 5,
+        borderRadius: borderRadius + 2.5
+      },
+    })
   }
 
   shrinkCircle() {
@@ -240,7 +238,7 @@ class LayeredCircle extends Component {
   }
 
   growMore() {
-    if(this.state.pressed) { this.handlePressIn() }
+    if(this.state.pressed) { this.growCircle() }
   }
 
   shrinkMore() {
@@ -248,36 +246,13 @@ class LayeredCircle extends Component {
       this.shrinkCircle()
     }else {
       if(this.state.layer === 2 && this.state.txt === 'success') {
-        this.setState({
-          txt: '',
-          pressed: false,
-          cleanSlate: true,
-          tagetOpened: true,
-          layer: 1,
-          checkInnerLayer: false,
-          shrinking: false,
-          innerCircle: {
-            height: 20,
-            width: 20,
-            borderRadius: 40
-          },
-          targetCircle: {
-            height: 50,
-            width: 50,
-            borderRadius: 25,
-            borderColor: 'blue',
-            borderWidth: 5,
-          },
-          targetCircle2: {
-            height: basicWidth / 3,
-            width: basicWidth / 3,
-            borderRadius: (basicWidth / 3) / 2,
-            borderColor: 'blue',
-            borderWidth: 5,
-          }
-        },this.props.updateCompLevel(1))
+        console.log('oh hey')
       }else {
         this.setState({
+          txt: 'failure',
+          shrinking: false,
+          checkInnerLayer: false,
+          layer: 1,
           cleanSlate: true,
           innerCircle: {
             height: 40,
@@ -320,6 +295,29 @@ class LayeredCircle extends Component {
     }
   }
 
+  resetBoard() {
+    let callback = this.resetTarget2.bind(this)
+    let animated = LayoutAnimation.Presets.easeInEaseOut
+    animated.duration = 300
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      txt: 'success',
+      layer: 1,
+      innerCircle: {
+        height: 40,
+        width: 40,
+        borderRadius: 20
+      },
+      targetCircle2: {
+        height: basicWidth / 3,
+        width: basicWidth / 3,
+        borderRadius: (basicWidth / 3) / 2,
+        borderColor: 'white',
+        borderWidth: 15,
+      }
+    }, this.props.updateCompLevel(1))
+  }
+
   resetTarget2() {
     this.setState({
       checkInnerLayer: false,
@@ -339,7 +337,7 @@ class LayeredCircle extends Component {
     let targetCircle = [styles.target1, this.state.targetCircle]
     return (
       <View style={styles.container}>
-        <Text style={styles.viewText}>{this.state.txt}</Text>
+        <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
         <Text style={styles.viewText}>Level Progress {this.props.compLevel}/3</Text>
 
 
