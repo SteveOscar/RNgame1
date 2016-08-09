@@ -10,8 +10,11 @@ import {
   Text,
   TextInput,
   View,
-  Animated
+  Animated,
+  Dimensions
 } from 'react-native';
+
+let screenHeight = Dimensions.get('window').height
 
 class game1 extends Component {
 
@@ -20,7 +23,7 @@ class game1 extends Component {
     this.state = {
       score: 0,
       level: 1,
-      compLevel: 0,
+      boardLevel: 0,
       gameStarted: false
     };
   }
@@ -34,19 +37,41 @@ class game1 extends Component {
     this.setState({ score: currentScore + points })
   }
 
-  updateCompLevel(points) {
-    currentLevel = this.state.compLevel
-    this.setState({ compLevel: currentLevel + points })
+  updateBoardLevel(points) {
+    currentLevel = this.state.boardLevel
+    this.setState({ boardLevel: currentLevel + points })
   }
 
+  checkScore() {
+    console.log('Checking Score: ', this.state.score)
+    previousLevel = this.state.level
+    if(this.state.score === 2) {
+      setTimeout(() => {
+        this.setState({ level: previousLevel + 1, boardLevel: 0 });
+      }, 1000);
+    }
+  }
+
+
+
   render() {
-    let component = this.state.gameStarted ? <BasicCircle updateScore={this.updateScore.bind(this)}/> : <StartScreen startGame={this.startGame.bind(this)}/>
+    let startScreen = <StartScreen startGame={this.startGame.bind(this)}/>
+    let currentBoard = this.state.level === 1 ?
+                       <BasicCircle updateScore={this.updateScore.bind(this)}
+                                    updateBoardLevel={this.updateBoardLevel.bind(this)}
+                                    boardLevel={this.state.boardLevel}
+                                    checkScore={this.checkScore.bind(this)}/> :
+                       <LayeredCircle updateScore={this.updateScore.bind(this)}
+                                      updateBoardLevel={this.updateBoardLevel.bind(this)}
+                                      boardLevel={this.state.boardLevel}
+                                      checkScore={this.checkScore.bind(this)}/>
+
+    let gameState = this.state.gameStarted ? currentBoard : startScreen
     let score = this.state.score
     return (
       <View style={styles.container}>
-        {/*{component}*/}
-        <LayeredCircle updateScore={this.updateScore.bind(this)} updateCompLevel={this.updateCompLevel.bind(this)} compLevel={this.state.compLevel}/>
-        <Text style={styles.text}>Score: {score}</Text>
+        {gameState}
+        <Text style={styles.text}>Total Score: {score}</Text>
       </View>
     );
   }

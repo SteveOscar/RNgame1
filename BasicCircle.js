@@ -14,6 +14,8 @@ import {
 
 let basicWidth = Dimensions.get('window').width * .75
 
+const pupilDiameter = 50
+
 class BasicCircle extends Component {
 
   constructor(props) {
@@ -42,11 +44,15 @@ class BasicCircle extends Component {
     this.pulse()
   }
 
+  componentWillReceiveProps() {
+    this.props.checkScore()
+  }
+
   pulse() {
     let callback = this.continuePulse.bind(this);
     let animated = LayoutAnimation.Presets.spring
     let size = this.state.innerCircle.width
-    let newWidth = size > 40 ? 40 : 46
+    let newWidth = size > pupilDiameter ? pupilDiameter : 56
     if(!this.state.targetOpened) { newWidth = 0 }
     animated.duration = Math.floor(Math.random() * 1000) + 400
     LayoutAnimation.configureNext(animated, callback);
@@ -54,7 +60,7 @@ class BasicCircle extends Component {
       innerCircle: {
         height: newWidth,
         width: newWidth,
-        borderRadius: size > 40 ? 20 : 23
+        borderRadius: size > pupilDiameter ? 25 : 25
       },
     })
   }
@@ -89,9 +95,9 @@ class BasicCircle extends Component {
       this.setState({
         txt: 'failiure',
         innerCircle: {
-          height: 40,
-          width: 40,
-          borderRadius: 20
+          height: pupilDiameter,
+          width: pupilDiameter,
+          borderRadius: 25
         },
         targetCircle: {
           height: basicWidth,
@@ -147,6 +153,7 @@ class BasicCircle extends Component {
       }
     })
     this.props.updateScore(1)
+    this.props.updateBoardLevel(1)
   }
 
   handlePressIn() {
@@ -201,12 +208,13 @@ class BasicCircle extends Component {
         this.setState({
           cleanSlate: true,
           innerCircle: {
-            height: 40,
-            width: 40,
-            borderRadius: 20
+            height: pupilDiameter,
+            width: pupilDiameter,
+            borderRadius: 25
           }
         })
-        this.pulse()
+        // TODO: implemnt counter to only run pulse if level isnt beat
+        // this.pulse()
       }
     }
   }
@@ -215,19 +223,24 @@ class BasicCircle extends Component {
     let innerCircle = [styles.view1, this.state.innerCircle]
     let targetCircle = [styles.target1, this.state.targetCircle]
     return (
-      <View style={styles.container}>
-        <Text style={styles.viewText}>{this.state.txt}</Text>
-
-        <View style={targetCircle} >
-          <Animated.View style={styles.container}>
-            <TouchableWithoutFeedback
-              onPressIn={this.handlePressIn.bind(this)}
-              onPressOut={this.handlePressOut.bind(this)}>
-              <View style={innerCircle}></View>
-            </TouchableWithoutFeedback>
-          </Animated.View>
+      <View>
+        <View style={styles.boardTextBox}>
+          <Text style={styles.viewText}>Level Progress {this.props.boardLevel}/3</Text>
+          <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
         </View>
 
+        <View style={styles.container}>
+          <View style={targetCircle} >
+            <Animated.View style={styles.container}>
+              <TouchableWithoutFeedback
+                onPressIn={this.handlePressIn.bind(this)}
+                onPressOut={this.handlePressOut.bind(this)}>
+                <View style={innerCircle}></View>
+              </TouchableWithoutFeedback>
+            </Animated.View>
+          </View>
+
+        </View>
       </View>
 
 
@@ -250,13 +263,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'red',
-    margin: 20
+    margin: 25
   },
   viewText: {
-    color: 'yellow'
+    fontSize: 20,
+    color: 'white',
+    marginBottom: 15
   },
   target1: {
     backgroundColor: 'transparent'
+  },
+  boardTextBox: {
+
   }
 });
 

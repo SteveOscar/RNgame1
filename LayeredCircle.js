@@ -14,36 +14,7 @@ import {
 
 let basicWidth = Dimensions.get('window').width * .85
 
-let newRoundState = {
-  txt: '',
-  pressed: false,
-  cleanSlate: true,
-  tagetOpened: true,
-  layer: 1,
-  checkInnerLayer: false,
-  shrinking: false,
-  innerCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 40
-  },
-  targetCircle: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    borderColor: 'blue',
-    borderWidth: 5,
-  },
-  targetCircle2: {
-    height: basicWidth / 3,
-    width: basicWidth / 3,
-    borderRadius: (basicWidth / 3) / 2,
-    borderColor: 'blue',
-    borderWidth: 5,
-  }
-};
-
-let stateObj =  {
+let loadState =  {
   txt: '',
   pressed: false,
   cleanSlate: true,
@@ -76,7 +47,7 @@ class LayeredCircle extends Component {
 
   constructor(props) {
     super(props);
-    this.state = stateObj
+    this.state = loadState
   }
 
   componentDidMount() {
@@ -87,7 +58,7 @@ class LayeredCircle extends Component {
     let callback = this.continuePulse.bind(this);
     let animated = LayoutAnimation.Presets.spring
     let size = this.state.innerCircle.width
-    let newWidth = size > 40 ? 40 : 46
+    let newWidth = size > 50 ? 50 : 56
     if(!this.state.targetOpened) { newWidth = 0 }
     animated.duration = Math.floor(Math.random() * 1000) + 400
     LayoutAnimation.configureNext(animated, callback);
@@ -95,7 +66,7 @@ class LayeredCircle extends Component {
       innerCircle: {
         height: newWidth,
         width: newWidth,
-        borderRadius: size > 40 ? 20 : 23
+        borderRadius: size > 50 ? 25 : 28
       },
     })
   }
@@ -255,9 +226,9 @@ class LayeredCircle extends Component {
           layer: 1,
           cleanSlate: true,
           innerCircle: {
-            height: 40,
-            width: 40,
-            borderRadius: 20
+            height: 50,
+            width: 50,
+            borderRadius: 25
           }
         })
         this.pulse()
@@ -280,9 +251,9 @@ class LayeredCircle extends Component {
         txt: 'failiure',
         layer: 1,
         innerCircle: {
-          height: 40,
-          width: 40,
-          borderRadius: 20
+          height: 50,
+          width: 50,
+          borderRadius: 25
         },
         targetCircle2: {
           height: basicWidth / 3,
@@ -304,9 +275,9 @@ class LayeredCircle extends Component {
       txt: 'success',
       layer: 1,
       innerCircle: {
-        height: 40,
-        width: 40,
-        borderRadius: 20
+        height: 50,
+        width: 50,
+        borderRadius: 25
       },
       targetCircle2: {
         height: basicWidth / 3,
@@ -315,7 +286,7 @@ class LayeredCircle extends Component {
         borderColor: 'white',
         borderWidth: 15,
       }
-    }, this.props.updateCompLevel(1))
+    }, this.props.updateBoardLevel(1))
   }
 
   resetTarget2() {
@@ -337,9 +308,10 @@ class LayeredCircle extends Component {
     let targetCircle = [styles.target1, this.state.targetCircle]
     return (
       <View style={styles.container}>
-        <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
-        <Text style={styles.viewText}>Level Progress {this.props.compLevel}/3</Text>
-
+        <View style={styles.boardTextBox}>
+          <Text style={styles.viewText}>Level Progress {this.props.boardLevel}/3</Text>
+          <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
+        </View>
 
         <View style={targetCircle} >
           <Animated.View style={styles.container}>
@@ -382,6 +354,9 @@ const styles = StyleSheet.create({
   },
   target1: {
     backgroundColor: 'transparent'
+  },
+  boardTextBox: {
+    top: 10
   }
 });
 
