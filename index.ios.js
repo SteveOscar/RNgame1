@@ -1,7 +1,9 @@
 let StartScreen = require('./StartScreen')
 let BasicCircle = require('./BasicCircle')
+let BasicCircle2 = require('./BasicCircle2')
 let LayeredCircle = require('./LayeredCircle')
 let BasicSquare = require('./BasicSquare')
+let Pupil = require('./components/Pupil')
 
 import React, { Component } from 'react';
 import {
@@ -57,7 +59,7 @@ class game1 extends Component {
   render() {
     let startScreen = <StartScreen startGame={this.startGame.bind(this)}/>
     let currentBoard = this.state.level === 1 ?
-                       <BasicCircle updateScore={this.updateScore.bind(this)}
+                       <BasicCircle2 updateScore={this.updateScore.bind(this)}
                                     updateBoardLevel={this.updateBoardLevel.bind(this)}
                                     boardLevel={this.state.boardLevel}
                                     checkScore={this.checkScore.bind(this)}/> :
