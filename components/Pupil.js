@@ -33,7 +33,7 @@ class Pupil extends Component {
 
   handlePressIn() {
     this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
-    // this.props.handlePressIn()
+    this.props.handlePressIn()
   }
 
   handlePressOut() {
@@ -124,7 +124,7 @@ class Pupil extends Component {
     let animated = LayoutAnimation.Presets.spring
     let size = this.state.pupil.width
     let newWidth = size > DIAMETER ? DIAMETER : 56
-    if(!this.state.targetOpened) { newWidth = 0 }
+    if(!this.props.ringOpened) { newWidth = 0 }
     animated.duration = Math.floor(Math.random() * 1000) + 400
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
@@ -137,17 +137,8 @@ class Pupil extends Component {
   }
 
   continuePulse() {
-    if(!this.state.targetOpened) {
-      this.setState({
-        targetOpened: true,
-        targetCircle: {
-          height: basicWidth,
-          width: basicWidth,
-          borderRadius: basicWidth/2,
-          borderColor: 'blue',
-          borderWidth: 5,
-        }
-      })
+    if(!this.props.ringOpened) {
+      this.props.expandRing()
     }
     if(this.state.cleanSlate) { this.pulse() }
   }

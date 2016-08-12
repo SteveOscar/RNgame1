@@ -20,9 +20,9 @@ class BasicCircle extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txt: '',
+      txt: 'Welcome',
       pressed: false,
-      tagetOpened: false,
+      ringOpened: false,
       targetCircle: {
         height: 50,
         width: 50,
@@ -35,6 +35,19 @@ class BasicCircle extends Component {
 
   componentWillReceiveProps() {
     this.props.checkScore()
+  }
+
+  expandRing() {
+    this.setState({
+      ringOpened: true,
+      targetCircle: {
+        height: basicWidth,
+        width: basicWidth,
+        borderRadius: basicWidth/2,
+        borderColor: 'blue',
+        borderWidth: 5,
+      }
+    })
   }
 
   handlePressIn() {
@@ -119,11 +132,21 @@ class BasicCircle extends Component {
 
   render() {
     // let pupilStyle = [styles.pupilStyle, this.state.pupil]
-    // let targetCircle = [styles.target1, this.state.targetCircle]
+    let targetCircle = [styles.target1, this.state.targetCircle]
     return (
       <View>
+      <View style={styles.boardTextBox}>
+        <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
+      </View>
+
         <View style={styles.container}>
-            <Pupil handlePressIn={this.handlePressIn} handlePressOut={this.handlePressOut} basicWidth={basicWidth}/>
+          <View style={targetCircle} >
+            <Pupil handlePressIn={this.handlePressIn.bind(this)}
+                   handlePressOut={this.handlePressOut}
+                   expandRing={this.expandRing.bind(this)}
+                   ringOpened={this.state.ringOpened}
+                   basicWidth={basicWidth}/>
+          </View>
         </View>
       </View>
 
