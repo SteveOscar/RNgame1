@@ -24,96 +24,16 @@ class Pupil extends Component {
       pressed: false,
       cleanSlate: true,
       pupil: {
-        height: 50,
-        width: 50,
+        height: DIAMETER,
+        width: DIAMETER,
         borderRadius: 25
       },
     };
   }
 
-  handlePressIn() {
-    this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
-    this.props.handlePressIn()
+  componentWillReceiveProps() {
+    if(this.props.shrinking) { this.shrinkCircle() }
   }
-
-  handlePressOut() {
-    const { basicWidth } = this.props
-    const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
-    this.setState({ pressed: false })
-    this.props.handlePressOut(result)
-    if(!result) {
-      let callback = console.log('done')
-      let animated = LayoutAnimation.Presets.easeInEaseOut
-      animated.duration = 300
-      LayoutAnimation.configureNext(animated, callback);
-      this.setState({
-        pupil: {
-          height: DIAMETER,
-          width: DIAMETER,
-          borderRadius: 25
-        },
-      })
-    }
-  }
-
-  growCircle() {
-    let size = this.state.pupil.height
-    let borderRadius = this.state.pupil.borderRadius
-    let animated = LayoutAnimation.Presets.linear
-    animated.duration = 10
-    let callback = this.growMore.bind(this);
-    LayoutAnimation.configureNext(animated, callback);
-    if(this.state.pressed) {
-      this.setState({
-        pupil: {
-          height: size + 5,
-          width: size + 5,
-          borderRadius: borderRadius + 2.5
-        },
-      })
-    }
-  }
-
-  growMore() {
-    if(this.state.pressed) { this.handlePressIn() }
-  }
-
-  // shrinkCircle() {
-  //   let size = this.state.pupil.height
-  //   let borderRadius = this.state.pupil.borderRadius
-  //   let animated = LayoutAnimation.Presets.linear
-  //   animated.duration = 15
-  //   let callback = this.shrinkMore.bind(this);
-  //   LayoutAnimation.configureNext(animated, callback);
-  //   this.setState({
-  //     pupil: {
-  //       height: size - 20,
-  //       width: size - 20,
-  //       borderRadius: borderRadius - 10
-  //     }
-  //   })
-  // }
-
-  // shrinkMore() {
-  //   if(this.state.pupil.width > 40) {
-  //     this.shrinkCircle()
-  //   }else {
-  //     if(this.state.layer === 2 && this.state.txt === 'success') {
-  //       this.setState({ newRoundState },this.props.updateCompLevel(1))
-  //     }else {
-  //       this.setState({
-  //         cleanSlate: true,
-  //         pupil: {
-  //           height: DIAMETER,
-  //           width: DIAMETER,
-  //           borderRadius: 25
-  //         }
-  //       })
-  //       // TODO: implemnt counter to only run pulse if level isnt beat
-  //       // this.pulse()
-  //     }
-  //   }
-  // }
 
   componentDidMount() {
     this.pulse()
@@ -141,6 +61,93 @@ class Pupil extends Component {
       this.props.expandRing()
     }
     if(this.state.cleanSlate) { this.pulse() }
+  }
+
+  handlePressIn() {
+    this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
+    this.props.handlePressIn()
+  }
+
+  handlePressOut() {
+    const { basicWidth } = this.props
+    const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
+    this.setState({ pressed: false })
+    this.props.handlePressOut(result)
+    if(!result) {
+      let callback = console.log('done')
+      let animated = LayoutAnimation.Presets.easeInEaseOut
+      animated.duration = 300
+      LayoutAnimation.configureNext(animated, callback);
+      this.setState({
+        pupil: {
+          height: DIAMETER,
+          width: DIAMETER,
+          borderRadius: 25
+        },
+      })
+    } else {
+      this.props.directHit()
+    }
+  }
+
+  growCircle() {
+    let size = this.state.pupil.height
+    let borderRadius = this.state.pupil.borderRadius
+    let animated = LayoutAnimation.Presets.linear
+    animated.duration = 10
+    let callback = this.growMore.bind(this);
+    LayoutAnimation.configureNext(animated, callback);
+    if(this.state.pressed) {
+      this.setState({
+        pupil: {
+          height: size + 5,
+          width: size + 5,
+          borderRadius: borderRadius + 2.5
+        },
+      })
+    }
+  }
+
+  growMore() {
+    if(this.state.pressed) { this.handlePressIn() }
+  }
+
+  shrinkCircle() {
+    let size = this.state.pupil.height
+    let borderRadius = this.state.pupil.borderRadius
+    let animated = LayoutAnimation.Presets.linear
+    animated.duration = 15
+    let callback = this.shrinkMore.bind(this);
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      pupil: {
+        height: size - 20,
+        width: size - 20,
+        borderRadius: borderRadius - 10
+      }
+    })
+  }
+
+  shrinkMore() {
+    if(this.state.pupil.width > 40) {
+      this.shrinkCircle()
+    }else {
+      if(this.state.layer === 2 && this.state.txt === 'success') {
+        this.setState({ newRoundState },this.props.updateCompLevel(1))
+      }else {
+        this.setState({
+          pressed: false,
+          cleanSlate: true,
+          pupil: {
+            height: DIAMETER,
+            width: DIAMETER,
+            borderRadius: 25
+          },
+        })
+        // TODO: implemnt counter to only run pulse if level isnt beat
+        // this.pulse()
+      }
+    }
   }
 
 
