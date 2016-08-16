@@ -39,30 +39,6 @@ class TargetRing extends Component {
 
   handlePressOut(result) {
     this.props.handlePressOut(result)
-    // this.setState({ pressed: false, txt: message })
-    // if(result) {
-    //   this.borderOut()
-    // }else {
-    //   let callback = this.resetTarget.bind(this)
-    //   let animated = LayoutAnimation.Presets.easeInEaseOut
-    //   animated.duration = 300
-    //   LayoutAnimation.configureNext(animated, callback);
-    //   this.setState({
-    //     txt: 'failiure',
-    //     pupil: {
-    //       height: pupilDiameter,
-    //       width: pupilDiameter,
-    //       borderRadius: 25
-    //     },
-    //     targetRing: {
-    //       height: basicWidth,
-    //       width: basicWidth,
-    //       borderRadius: basicWidth/2,
-    //       borderColor: 'red',
-    //       borderWidth: 5,
-    //     }
-    //   })
-    // }
   }
 
   expandRing() {
@@ -92,6 +68,10 @@ class TargetRing extends Component {
 
   directHit() {
     this.borderOut()
+  }
+
+  resetState() {
+    this.setState({ shrinking: false })
   }
 
   borderOut() {
@@ -138,6 +118,7 @@ class TargetRing extends Component {
                    handlePressOut={this.handlePressOut.bind(this)}
                    expandRing={this.expandRing.bind(this)}
                    directHit={this.directHit.bind(this)}
+                   resetParent={this.resetState.bind(this)}
                    ringOpened={this.state.ringOpened}
                    shrinking={this.state.shrinkPupil}
                    basicWidth={basicWidth}/>

@@ -109,7 +109,8 @@ class Pupil extends Component {
   }
 
   growMore() {
-    if(this.state.pressed) { this.handlePressIn() }
+    this.setState({ cleanSlate: false })
+    if(this.state.pressed) { this.growCircle() }
   }
 
   shrinkCircle() {
@@ -145,7 +146,9 @@ class Pupil extends Component {
           },
         })
         // TODO: implemnt counter to only run pulse if level isnt beat
+        // this.props.resetParent()
         // this.pulse()
+        console.log('Should pulse')
       }
     }
   }
