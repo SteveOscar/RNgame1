@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 let TargetRing = require('./components/TargetRing')
+let Pupil = require('./components/Pupil')
 import {
   StyleSheet,
   Text,
@@ -13,7 +14,10 @@ import {
   Dimensions
 } from 'react-native';
 
-let basicWidth = Dimensions.get('window').width * .75
+const basicWidth = Dimensions.get('window').width * .75
+const screenWidth = Dimensions.get('window').width
+const screenHeight = Dimensions.get('window').height
+
 
 class BasicCircle extends Component {
 
@@ -22,6 +26,8 @@ class BasicCircle extends Component {
     this.state = {
       txt: 'Welcome',
       pressed: false,
+      shrinkPupil: false,
+      directHit: false
     };
   }
 
@@ -45,14 +51,16 @@ class BasicCircle extends Component {
   render() {
     return (
       <View>
-      <View style={styles.boardTextBox}>
-        <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
-      </View>
-        <View style={styles.container}>
-          <TargetRing handlePressIn={this.handlePressIn.bind(this)}
-                      handlePressOut={this.handlePressOut.bind(this)}
-                      updateScore={this.updateScore.bind(this)}>
+
+        <View style={styles.targetContainer}>
+          <TargetRing expandRing={this.state.expandRing}
+                      directHit={this.state.directHit}>
           </TargetRing>
+        </View>
+        <View style={styles.pupilView}>
+          <Pupil handlePressIn={this.handlePressIn.bind(this)}
+                 handlePressOut={this.handlePressOut.bind(this)}
+                 shrinking={this.state.shrinkPupil}/>
         </View>
       </View>
     );
@@ -61,22 +69,20 @@ class BasicCircle extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   },
   targetContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    position: 'absolute',
+    top: 50
   },
   viewText: {
     fontSize: 20,
     color: 'white',
     marginBottom: 15
   },
-  boardTextBox: {
-
+  pupilView: {
+    position: 'absolute',
+    top: 50,
   }
 });
 

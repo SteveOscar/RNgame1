@@ -36,7 +36,9 @@ class Pupil extends Component {
   }
 
   componentDidMount() {
-    this.pulse()
+    setTimeout(() => {
+      this.pulse()
+    }, 1100);
   }
 
   pulse() {
@@ -44,7 +46,6 @@ class Pupil extends Component {
     let animated = LayoutAnimation.Presets.spring
     let size = this.state.pupil.width
     let newWidth = size > DIAMETER ? DIAMETER : 56
-    if(!this.props.ringOpened) { newWidth = 0 }
     animated.duration = Math.floor(Math.random() * 1000) + 400
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
@@ -57,9 +58,6 @@ class Pupil extends Component {
   }
 
   continuePulse() {
-    if(!this.props.ringOpened) {
-      this.props.expandRing()
-    }
     if(this.state.cleanSlate) { this.pulse() }
   }
 
@@ -146,8 +144,7 @@ class Pupil extends Component {
           },
         })
         // TODO: implemnt counter to only run pulse if level isnt beat
-        // this.props.resetParent()
-        // this.pulse()
+        this.pulse()
         console.log('Should pulse')
       }
     }
@@ -157,7 +154,7 @@ class Pupil extends Component {
   render() {
     let pupil = [styles.pupilStyle, this.state.pupil]
     return (
-      <Animated.View style={styles.container}>
+      <Animated.View>
         <TouchableWithoutFeedback
           onPressIn={this.handlePressIn.bind(this)}
           onPressOut={this.handlePressOut.bind(this)}>
@@ -169,14 +166,7 @@ class Pupil extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   pupilStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'red',
     margin: 25
   },

@@ -1,5 +1,5 @@
 let StartScreen = require('./StartScreen')
-let BasicCircle = require('./BasicCircle')
+// let BasicCircle = require('./BasicCircle')
 let BasicCircle2 = require('./BasicCircle2')
 let LayeredCircle = require('./LayeredCircle')
 let BasicSquare = require('./BasicSquare')
@@ -15,7 +15,7 @@ import {
   Dimensions
 } from 'react-native';
 
-let screenHeight = Dimensions.get('window').height
+const screenHeight = Dimensions.get('window').height
 
 class game1 extends Component {
 

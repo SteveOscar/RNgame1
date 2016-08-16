@@ -33,12 +33,31 @@ class TargetRing extends Component {
     };
   }
 
-  handlePressIn() {
-    this.props.handlePressIn()
+  componentWillReceiveProps() {
+    if(this.props.expandRing) { this.expandRing() }
+    if(this.props.directHit) { this.directHit() }
   }
 
-  handlePressOut(result) {
-    this.props.handlePressOut(result)
+  componentDidMount() {
+    setTimeout(() => {
+      this.openRing()
+    }, 1000);
+  }
+
+  openRing() {
+    let callback = this.props.targetOpen;
+    let animated = LayoutAnimation.Presets.linear
+    animated.duration = 300
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      targetRing: {
+        height: basicWidth,
+        width: basicWidth,
+        borderRadius: basicWidth / 2,
+        borderColor: 'blue',
+        borderWidth: 5
+      },
+    })
   }
 
   expandRing() {
@@ -111,17 +130,9 @@ class TargetRing extends Component {
   render() {
     let targetRing = [styles.target1, this.state.targetRing]
     return (
-      <Animated.View style={styles.container}>
+      <Animated.View>
         <TouchableWithoutFeedback>
           <View style={targetRing}>
-            <Pupil handlePressIn={this.handlePressIn.bind(this)}
-                   handlePressOut={this.handlePressOut.bind(this)}
-                   expandRing={this.expandRing.bind(this)}
-                   directHit={this.directHit.bind(this)}
-                   resetParent={this.resetState.bind(this)}
-                   ringOpened={this.state.ringOpened}
-                   shrinking={this.state.shrinkPupil}
-                   basicWidth={basicWidth}/>
           </View>
         </TouchableWithoutFeedback>
       </Animated.View>
@@ -130,11 +141,6 @@ class TargetRing extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   target1: {
     backgroundColor: 'transparent'
   },
