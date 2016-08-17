@@ -47,21 +47,30 @@ class BasicCircle extends Component {
   updateScore(points) {
     this.props.updateScore(points)
   }
+  //
+  // <View style={styles.boardTextBox}>
+  //   <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
+  // </View>
+
+
+
+
 
   render() {
     return (
-      <View>
-
-        <View style={styles.targetContainer}>
-          <TargetRing expandRing={this.state.expandRing}
-                      directHit={this.state.directHit}>
-          </TargetRing>
-        </View>
-        <View style={styles.pupilView}>
+      <View style={styles.container}>
+        <View style={styles.paddingLayer}>
           <Pupil handlePressIn={this.handlePressIn.bind(this)}
                  handlePressOut={this.handlePressOut.bind(this)}
                  shrinking={this.state.shrinkPupil}/>
         </View>
+
+        <View style={styles.holdOpen}>
+          <TargetRing expandRing={this.state.expandRing} directHit={this.state.directHit}/>
+        </View>
+
+
+
       </View>
     );
   }
@@ -69,11 +78,37 @@ class BasicCircle extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: screenHeight,
+    width: screenWidth,
   },
-  targetContainer: {
+  holdOpen: {
+    height: screenHeight,
+    width: screenWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  targetView: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    backgroundColor: 'blue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 0
+  },
+  paddingLayer: {
+    height: screenHeight,
+    width: screenWidth,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 0,
     position: 'absolute',
-    top: 50
+    zIndex: 5
+
   },
   viewText: {
     fontSize: 20,
@@ -81,8 +116,10 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   pupilView: {
-    position: 'absolute',
-    top: 50,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: 'red',
   }
 });
 

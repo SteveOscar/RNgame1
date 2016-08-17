@@ -142,7 +142,9 @@ class TargetRing extends Component {
 
 const styles = StyleSheet.create({
   target1: {
-    backgroundColor: 'transparent'
+    flex: 1,
+    backgroundColor: 'transparent',
+    zIndex: 0
   },
 });
 

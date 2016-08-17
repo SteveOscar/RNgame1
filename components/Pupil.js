@@ -154,7 +154,7 @@ class Pupil extends Component {
   render() {
     let pupil = [styles.pupilStyle, this.state.pupil]
     return (
-      <Animated.View>
+      <Animated.View style={styles.pupilContainer}>
         <TouchableWithoutFeedback
           onPressIn={this.handlePressIn.bind(this)}
           onPressOut={this.handlePressOut.bind(this)}>
@@ -168,8 +168,10 @@ class Pupil extends Component {
 const styles = StyleSheet.create({
   pupilStyle: {
     backgroundColor: 'red',
-    margin: 25
+    margin: 25,
   },
+  pupilContainer: {
+  }
 });
 
 module.exports = Pupil;
