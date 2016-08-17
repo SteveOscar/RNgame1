@@ -11,8 +11,8 @@ import {
   Dimensions
 } from 'react-native';
 
-let screenHeight = Dimensions.get('window').height
-let basicWidth = Dimensions.get('window').width * .75
+const screenHeight = Dimensions.get('window').height
+const basicWidth = Dimensions.get('window').width * .75
 
 const DIAMETER = 50
 
@@ -24,9 +24,9 @@ class Pupil extends Component {
       pressed: false,
       cleanSlate: true,
       pupil: {
-        height: DIAMETER,
-        width: DIAMETER,
-        borderRadius: 25
+        height: 0,
+        width: 0,
+        borderRadius: 0
       },
     };
   }
@@ -67,12 +67,11 @@ class Pupil extends Component {
   }
 
   handlePressOut() {
-    const { basicWidth } = this.props
     const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
     this.setState({ pressed: false })
     this.props.handlePressOut(result)
     if(!result) {
-      let callback = console.log('done')
+      let callback = console.log('Missed')
       let animated = LayoutAnimation.Presets.easeInEaseOut
       animated.duration = 300
       LayoutAnimation.configureNext(animated, callback);
@@ -83,8 +82,6 @@ class Pupil extends Component {
           borderRadius: 25
         },
       })
-    } else {
-      this.props.directHit()
     }
   }
 

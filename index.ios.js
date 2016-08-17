@@ -57,7 +57,7 @@ class game1 extends Component {
 
   render() {
     let startScreen = <StartScreen startGame={this.startGame.bind(this)}/>
-    let currentBoard = this.state.level === 1 ?
+    let currentBoard = this.state.level < 3 ?
                        <BasicCircle2 updateScore={this.updateScore.bind(this)}
                                     updateBoardLevel={this.updateBoardLevel.bind(this)}
                                     boardLevel={this.state.boardLevel}
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'darkgrey'
+    backgroundColor: 'black'
   },
   text: {
     color: 'red'

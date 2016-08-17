@@ -41,24 +41,21 @@ class BasicCircle extends Component {
 
   handlePressOut(result) {
     let message = result ? 'Success' : 'Failure'
-    this.setState({ pressed: false, txt: message })
+    if(result){
+      this.setState({ directHit: true, pressed: false, txt: message })
+    } else {
+      this.setState({ pressed: false, txt: message })
+    }
   }
 
   updateScore(points) {
     this.props.updateScore(points)
   }
-  //
-  // <View style={styles.boardTextBox}>
-  //   <Text style={styles.viewText}>{this.state.txt || '...'}</Text>
-  // </View>
-
-
-
-
 
   render() {
     return (
       <View style={styles.container}>
+
         <View style={styles.paddingLayer}>
           <Pupil handlePressIn={this.handlePressIn.bind(this)}
                  handlePressOut={this.handlePressOut.bind(this)}
@@ -66,7 +63,9 @@ class BasicCircle extends Component {
         </View>
 
         <View style={styles.holdOpen}>
-          <TargetRing expandRing={this.state.expandRing} directHit={this.state.directHit}/>
+          <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
+          <TargetRing hitDetected={this.state.directHit}
+                      updateScore={this.updateScore.bind(this)}/>
         </View>
 
 
@@ -120,6 +119,13 @@ const styles = StyleSheet.create({
     width: 50,
     borderRadius: 25,
     backgroundColor: 'red',
+  },
+  boardText: {
+    color: 'white',
+    position: 'absolute',
+    top: screenHeight*.2,
+    left: 50,
+    fontSize: 18
   }
 });
 

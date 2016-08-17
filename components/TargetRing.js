@@ -33,9 +33,8 @@ class TargetRing extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    if(this.props.expandRing) { this.expandRing() }
-    if(this.props.directHit) { this.directHit() }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.hitDetected) { this.directHit() }
   }
 
   componentDidMount() {
@@ -57,19 +56,6 @@ class TargetRing extends Component {
         borderColor: 'blue',
         borderWidth: 5
       },
-    })
-  }
-
-  expandRing() {
-    this.setState({
-      ringOpened: true,
-      targetRing: {
-        height: basicWidth,
-        width: basicWidth,
-        borderRadius: basicWidth/2,
-        borderColor: 'blue',
-        borderWidth: 5,
-      }
     })
   }
 
