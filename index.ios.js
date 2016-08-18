@@ -1,6 +1,6 @@
 let StartScreen = require('./StartScreen')
 // let BasicCircle = require('./BasicCircle')
-let BasicCircle2 = require('./BasicCircle2')
+let Level1 = require('./Level1')
 let LayeredCircle = require('./LayeredCircle')
 let BasicSquare = require('./BasicSquare')
 
@@ -34,8 +34,10 @@ class game1 extends Component {
   }
 
   updateScore(points) {
+    console.log('updating score by', points)
     currentScore = this.state.score
     this.setState({ score: currentScore + points })
+    // TODO checkScore() ?
   }
 
   updateBoardLevel(points) {
@@ -46,7 +48,7 @@ class game1 extends Component {
   checkScore() {
     console.log('Checking Score: ', this.state.score)
     previousLevel = this.state.level
-    if(this.state.score === 2) {
+    if(this.state.score === 3) {
       setTimeout(() => {
         this.setState({ level: previousLevel + 1, boardLevel: 0 });
       }, 1000);
@@ -58,10 +60,9 @@ class game1 extends Component {
   render() {
     let startScreen = <StartScreen startGame={this.startGame.bind(this)}/>
     let currentBoard = this.state.level < 3 ?
-                       <BasicCircle2 updateScore={this.updateScore.bind(this)}
+                       <Level1 updateScore={this.updateScore.bind(this)}
                                     updateBoardLevel={this.updateBoardLevel.bind(this)}
-                                    boardLevel={this.state.boardLevel}
-                                    checkScore={this.checkScore.bind(this)}/> :
+                                    boardLevel={this.state.boardLevel}/> :
                        <LayeredCircle updateScore={this.updateScore.bind(this)}
                                       updateBoardLevel={this.updateBoardLevel.bind(this)}
                                       boardLevel={this.state.boardLevel}
@@ -86,7 +87,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'black'
   },
   text: {
-    color: 'red'
+    color: 'red',
+    marginBottom: 20
   }
 });
 

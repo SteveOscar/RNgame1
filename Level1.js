@@ -19,37 +19,34 @@ const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
 
-class BasicCircle extends Component {
+class Level1 extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       txt: 'Welcome',
-      pressed: false,
       shrinkPupil: false,
       directHit: false
     };
   }
 
-  componentWillReceiveProps() {
-    this.props.checkScore()
-  }
-
   handlePressIn() {
-    this.setState({ txt: '', pressed: true })
+    this.setState({ txt: '' })
   }
 
   handlePressOut(result) {
     let message = result ? 'Success' : 'Failure'
     if(result){
-      this.setState({ directHit: true, pressed: false, txt: message })
+      this.setState({ directHit: true, txt: message })
+      // this.props.checkScore()
     } else {
-      this.setState({ pressed: false, txt: message })
+      this.setState({ txt: message })
     }
   }
 
   updateScore(points) {
     this.props.updateScore(points)
+    this.setState({ shrinkPupil: true })
   }
 
   render() {
@@ -129,4 +126,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = BasicCircle;
+module.exports = Level1;

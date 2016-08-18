@@ -21,8 +21,8 @@ class TargetRing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shrinkPupil: false,
       ringOpened: false,
+      handlingHit: false,
       targetRing: {
         height: 50,
         width: 50,
@@ -34,7 +34,11 @@ class TargetRing extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.hitDetected) { this.directHit() }
+    if(this.state.handlingHit) { return }
+    if(nextProps.hitDetected) {
+      console.log('Detecting Hit in Target')
+      this.setState({ handlingHit: true }, this.borderOut())
+    }
   }
 
   componentDidMount() {
@@ -71,10 +75,6 @@ class TargetRing extends Component {
           });
   }
 
-  directHit() {
-    this.borderOut()
-  }
-
   resetState() {
     this.setState({ shrinking: false })
   }
@@ -82,13 +82,13 @@ class TargetRing extends Component {
   borderOut() {
     let callback = this.borderIn.bind(this);
     let animated = LayoutAnimation.Presets.linear
-    animated.duration = 300
+    animated.duration = 500
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {
-        height: basicWidth + 20,
-        width: basicWidth + 20,
-        borderRadius: (basicWidth + 20) / 2,
+        height: basicWidth + 40,
+        width: basicWidth + 40,
+        borderRadius: (basicWidth + 40) / 2,
         borderColor: 'white',
         borderWidth: 25,
       },
@@ -96,9 +96,9 @@ class TargetRing extends Component {
   }
 
   borderIn() {
-    let callback = this.setState({ shrinkPupil: true })
+    let callback = this.props.updateScore
     let animated = LayoutAnimation.Presets.linear
-    animated.duration = 100
+    animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {
@@ -108,8 +108,8 @@ class TargetRing extends Component {
         borderColor: 'blue',
         borderWidth: 5,
       }
-    })
-    this.props.updateScore(1)
+    }, this.setState({ detectingHit: false }))
+
     // this.props.updateBoardLevel(1)
   }
 

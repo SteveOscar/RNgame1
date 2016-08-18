@@ -31,8 +31,11 @@ class Pupil extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    if(this.props.shrinking) { this.shrinkCircle() }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.shrinking) {
+      console.log('Pupil received prop message to shrink')
+      this.shrinkCircle()
+    }
   }
 
   componentDidMount() {
@@ -79,8 +82,9 @@ class Pupil extends Component {
         pupil: {
           height: DIAMETER,
           width: DIAMETER,
-          borderRadius: 25
+          borderRadius: 25,
         },
+        pressed: false
       })
     }
   }
@@ -125,6 +129,7 @@ class Pupil extends Component {
   }
 
   shrinkMore() {
+    console.log('shrink more?')
     if(this.state.pupil.width > 40) {
       this.shrinkCircle()
     }else {
