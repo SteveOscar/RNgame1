@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 let TargetRing = require('./components/TargetRing')
+let TargetRing2 = require('./components/TargetRing2')
 let Pupil = require('./components/Pupil')
 
 import {
@@ -19,7 +20,7 @@ class Level1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txt: 'Level 1',
+      txt: 'Level 2',
       shrinkPupil: false,
       directHit: false
     };
@@ -51,17 +52,25 @@ class Level1 extends Component {
     return (
       <View style={styles.container}>
 
-        <View style={styles.paddingLayer}>
+        <View style={styles.holdOpen}>
+
+          <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
+          <TargetRing hitDetected={this.state.directHit}
+                      updateScore={this.updateScore.bind(this)}/>
+
+                      <View style={styles.paddingLayer}>
+                        <TargetRing2/>
+                      </View>            
+
+        </View>
+
+        <View style={styles.paddingLayerPupil}>
+
           <Pupil handlePressIn={this.handlePressIn.bind(this)}
                  handlePressOut={this.handlePressOut.bind(this)}
                  shrinking={this.state.shrinkPupil}
                  successFinished={this.successFinished.bind(this)}/>
-        </View>
 
-        <View style={styles.holdOpen}>
-          <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
-          <TargetRing hitDetected={this.state.directHit}
-                      updateScore={this.updateScore.bind(this)}/>
         </View>
 
       </View>
@@ -91,8 +100,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: 0,
     position: 'absolute',
-    zIndex: 5
-
+    zIndex: 0
+  },
+  paddingLayerPupil: {
+    height: screenHeight,
+    width: screenWidth,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 0,
+    position: 'absolute',
+    zIndex: 10
   },
   boardText: {
     color: 'white',

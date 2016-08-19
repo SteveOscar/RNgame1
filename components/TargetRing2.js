@@ -16,7 +16,7 @@ let basicWidth = Dimensions.get('window').width * .75
 
 const DIAMETER = 50
 
-class TargetRing extends Component {
+class TargetRing2 extends Component {
 
   constructor(props) {
     super(props);
@@ -24,25 +24,26 @@ class TargetRing extends Component {
       ringOpened: false,
       hitTracking: false,
       targetRing: {
-        height: 50,
-        width: 50,
-        borderRadius: 25,
-        borderColor: 'blue',
+        height: 100,
+        width: 100,
+        borderRadius: 50,
+        borderColor: 'orange',
         borderWidth: 5,
       },
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.hitDetected != this.state.hitTracking) {
-      this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if(nextProps.hitDetected != this.state.hitTracking) {
+  //     console.log('Hit DETECTED, UGH')
+  //     this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
+  //   }
+  // }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.openRing()
-    }, 1000);
+    // setTimeout(() => {
+    //   this.openRing()
+    // }, 1000);
   }
 
   openRing() {
@@ -94,7 +95,7 @@ class TargetRing extends Component {
   }
 
   render() {
-    let targetRing = [styles.target1, this.state.targetRing]
+    let targetRing = [styles.target, this.state.targetRing]
     return (
       <Animated.View>
         <TouchableWithoutFeedback>
@@ -107,11 +108,11 @@ class TargetRing extends Component {
 }
 
 const styles = StyleSheet.create({
-  target1: {
+  target: {
     flex: 1,
     backgroundColor: 'transparent',
-    zIndex: 0
+    zIndex: 100
   },
 });
 
-module.exports = TargetRing;
+module.exports = TargetRing2;

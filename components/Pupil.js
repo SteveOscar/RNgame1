@@ -169,10 +169,8 @@ class Pupil extends Component {
 const styles = StyleSheet.create({
   pupilStyle: {
     backgroundColor: 'red',
-    margin: 25,
+    zIndex: 0
   },
-  pupilContainer: {
-  }
 });
 
 module.exports = Pupil;
