@@ -7,7 +7,8 @@ import {
   Text,
   TextInput,
   View,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width
@@ -64,6 +65,12 @@ class Level1 extends Component {
                       updateScore={this.updateScore.bind(this)}/>
         </View>
 
+        <TouchableWithoutFeedback
+          onPressIn={this.handlePressIn.bind(this)}
+          onPressOut={this.handlePressOut.bind(this)}>
+          <View style={styles.theButton}></View>
+        </TouchableWithoutFeedback>
+
       </View>
     );
   }
@@ -100,6 +107,16 @@ const styles = StyleSheet.create({
     top: screenHeight*.2,
     left: 50,
     fontSize: 18
+  },
+  theButton: {
+    height: 50,
+    width: 50,
+    borderRadius: 30,
+    backgroundColor: 'white',
+    position: 'absolute',
+    bottom: 50,
+    left: 50,
+    zIndex: 1000
   }
 });
 
