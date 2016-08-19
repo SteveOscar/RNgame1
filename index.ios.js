@@ -34,6 +34,7 @@ class game1 extends Component {
   }
 
   updateScore(points) {
+    debugger
     console.log('updating score by', points)
     currentScore = this.state.score
     this.setState({ score: currentScore + points })

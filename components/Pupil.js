@@ -23,6 +23,7 @@ class Pupil extends Component {
     this.state = {
       pressed: false,
       cleanSlate: true,
+      handlingPressOut: false,
       pupil: {
         height: 0,
         width: 0,
@@ -32,9 +33,14 @@ class Pupil extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.shrinking) {
-      this.shrinkCircle()
+    if(nextProps.pressed) {
+      this.setState({ handlingPressOut: false}, this.handlePressIn())
     }
+    if(nextProps.pressed == false) {
+      this.setState({ handlingPressOut: true })
+      this.handlePressOut()
+    }
+    if(nextProps.shrinking) { this.shrinkCircle() }
   }
 
   componentDidMount() {
@@ -65,15 +71,14 @@ class Pupil extends Component {
 
   handlePressIn() {
     this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
-    this.props.handlePressIn()
   }
 
   handlePressOut() {
+    if(this.state.handlingPressOut) { return }
     const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
     this.setState({ pressed: false })
-    this.props.handlePressOut(result)
     if(!result) {
-      let callback = console.log('Missed')
+      let callback = console.log('Missed in PressOut Pupil')
       let animated = LayoutAnimation.Presets.easeInEaseOut
       animated.duration = 300
       LayoutAnimation.configureNext(animated, callback);
@@ -82,10 +87,10 @@ class Pupil extends Component {
           height: DIAMETER,
           width: DIAMETER,
           borderRadius: 25,
-        },
-        pressed: false
+        }
       })
     }
+    this.props.sendResult(result)
   }
 
   growCircle() {
@@ -107,7 +112,6 @@ class Pupil extends Component {
   }
 
   growMore() {
-    this.setState({ cleanSlate: false })
     if(this.state.pressed) { this.growCircle() }
   }
 
@@ -156,11 +160,7 @@ class Pupil extends Component {
     let pupil = [styles.pupilStyle, this.state.pupil]
     return (
       <Animated.View style={styles.pupilContainer}>
-        <TouchableWithoutFeedback
-          onPressIn={this.handlePressIn.bind(this)}
-          onPressOut={this.handlePressOut.bind(this)}>
-          <View style={pupil}></View>
-        </TouchableWithoutFeedback>
+        <View style={pupil}></View>
       </Animated.View>
     );
   }
