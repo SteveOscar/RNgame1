@@ -37,7 +37,7 @@ class Level1 extends Component {
   handlePressOut(result) {
     let message = result ? 'Success' : 'Failure'
     if(result){
-      this.setState({ directHit: true, txt: message })
+      this.setState({ directHit: !this.state.directHit, txt: message })
       // this.props.checkScore()
     } else {
       this.setState({ txt: message })
@@ -49,6 +49,10 @@ class Level1 extends Component {
     this.setState({ shrinkPupil: true })
   }
 
+  successFinished() {
+    this.setState({ shrinkPupil: false })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -56,7 +60,8 @@ class Level1 extends Component {
         <View style={styles.paddingLayer}>
           <Pupil handlePressIn={this.handlePressIn.bind(this)}
                  handlePressOut={this.handlePressOut.bind(this)}
-                 shrinking={this.state.shrinkPupil}/>
+                 shrinking={this.state.shrinkPupil}
+                 successFinished={this.successFinished.bind(this)}/>
         </View>
 
         <View style={styles.holdOpen}>

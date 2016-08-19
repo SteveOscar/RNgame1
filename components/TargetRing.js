@@ -22,7 +22,7 @@ class TargetRing extends Component {
     super(props);
     this.state = {
       ringOpened: false,
-      handlingHit: false,
+      hitTracking: false,
       targetRing: {
         height: 50,
         width: 50,
@@ -34,12 +34,19 @@ class TargetRing extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.state.handlingHit) { return }
-    if(nextProps.hitDetected) {
-      console.log('Detecting Hit in Target')
-      this.setState({ handlingHit: true }, this.borderOut())
+    if(nextProps.hitDetected != this.state.hitTracking) {
+      console.log('Hit DETECTED, UGH')
+      this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
     }
   }
+
+  // componentDidUpdate(nextProps) {
+  //   if(nextProps.hitDetected) {
+  //     console.log('Detecting Hit in Target via componentDidUpdate nextProps')
+  //     console.log(nextProps)
+  //     // this.setState({ handlingHit: true }, this.borderOut())
+  //   }
+  // }
 
   componentDidMount() {
     setTimeout(() => {
@@ -65,14 +72,15 @@ class TargetRing extends Component {
 
   resetTarget() {
     this.setState({
-            targetRing: {
-              height: basicWidth,
-              width: basicWidth,
-              borderRadius: basicWidth/2,
-              borderColor: 'blue',
-              borderWidth: 5,
-            }
-          });
+      handlingHit: false,
+      targetRing: {
+        height: basicWidth,
+        width: basicWidth,
+        borderRadius: basicWidth/2,
+        borderColor: 'blue',
+        borderWidth: 5,
+      }
+    });
   }
 
   resetState() {
@@ -95,8 +103,13 @@ class TargetRing extends Component {
     })
   }
 
+  borderInCallBack() {
+    console.log('RESET handling hit to false')
+    this.setState({ handlingHit: false })
+  }
+
   borderIn() {
-    let callback = this.props.updateScore
+    let callback = this.borderInCallBack()
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
@@ -108,8 +121,7 @@ class TargetRing extends Component {
         borderColor: 'blue',
         borderWidth: 5,
       }
-    }, this.setState({ detectingHit: false }))
-
+    }, this.props.updateScore(1))
     // this.props.updateBoardLevel(1)
   }
 

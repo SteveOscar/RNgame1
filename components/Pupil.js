@@ -33,7 +33,6 @@ class Pupil extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.shrinking) {
-      console.log('Pupil received prop message to shrink')
       this.shrinkCircle()
     }
   }
@@ -129,12 +128,11 @@ class Pupil extends Component {
   }
 
   shrinkMore() {
-    console.log('shrink more?')
     if(this.state.pupil.width > 40) {
       this.shrinkCircle()
     }else {
-      if(this.state.layer === 2 && this.state.txt === 'success') {
-        this.setState({ newRoundState },this.props.updateCompLevel(1))
+      if(this.state.layer === 2) {
+        // this.setState({ newRoundState },this.props.updateCompLevel(1))
       }else {
         this.setState({
           pressed: false,
@@ -146,6 +144,7 @@ class Pupil extends Component {
           },
         })
         // TODO: implemnt counter to only run pulse if level isnt beat
+        this.props.successFinished()
         this.pulse()
         console.log('Should pulse')
       }
