@@ -21,7 +21,6 @@ class Pupil extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pressed: false,
       cleanSlate: true,
       handlingPressOut: false,
       pupil: {
@@ -70,13 +69,12 @@ class Pupil extends Component {
   }
 
   handlePressIn() {
-    this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
+    this.setState({ cleanSlate: false }, this.growCircle.bind(this))
   }
 
   handlePressOut() {
     if(this.state.handlingPressOut) { return }
     const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
-    this.setState({ pressed: false })
     if(!result) {
       let callback = console.log('Missed in PressOut Pupil')
       let animated = LayoutAnimation.Presets.easeInEaseOut
@@ -100,19 +98,17 @@ class Pupil extends Component {
     animated.duration = 10
     let callback = this.growMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
-    if(this.state.pressed) {
-      this.setState({
-        pupil: {
-          height: size + 5,
-          width: size + 5,
-          borderRadius: borderRadius + 2.5
-        },
-      })
-    }
+    this.setState({
+      pupil: {
+        height: size + 5,
+        width: size + 5,
+        borderRadius: borderRadius + 2.5
+      },
+    })
   }
 
   growMore() {
-    if(this.state.pressed) { this.growCircle() }
+    if(!this.state.handlingPressOut) { this.growCircle() }
   }
 
   shrinkCircle() {
@@ -135,23 +131,18 @@ class Pupil extends Component {
     if(this.state.pupil.width > 40) {
       this.shrinkCircle()
     }else {
-      if(this.state.layer === 2) {
-        // this.setState({ newRoundState },this.props.updateCompLevel(1))
-      }else {
-        this.setState({
-          pressed: false,
-          cleanSlate: true,
-          pupil: {
-            height: DIAMETER,
-            width: DIAMETER,
-            borderRadius: 25
-          },
-        })
-        // TODO: implemnt counter to only run pulse if level isnt beat
-        this.props.successFinished()
-        this.pulse()
-        console.log('Should pulse')
-      }
+      this.setState({
+        cleanSlate: true,
+        pupil: {
+          height: DIAMETER,
+          width: DIAMETER,
+          borderRadius: 25
+        },
+      })
+      // TODO: implemnt counter to only run pulse if level isnt beat
+      this.props.successFinished()
+      this.pulse()
+      console.log('Should pulse')
     }
   }
 

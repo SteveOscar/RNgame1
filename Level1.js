@@ -43,20 +43,19 @@ class Level1 extends Component {
   receiveResult(result) {
     let message = result ? 'Success' : 'Failure'
     if(result) {
-      this.setState({ txt: 'Success' })
-      // this.props.updateScore(1)
+      this.setState({ txt: 'Success', directHit: true })
     }else {
       this.setState({ txt: 'Missed' })
-      // this.props.updateScore(-1)
+      this.props.updateScore(-1)
     }
   }
 
-  updateScore(points) {
-    this.props.updateScore(points)
-    this.setState({ shrinkPupil: true })
+  targetDone() {
+    this.setState({ shrinkPupil: true, directHit: false })
   }
 
   successFinished() {
+    this.props.updateScore(1)
     this.setState({ shrinkPupil: false })
   }
 
@@ -74,7 +73,7 @@ class Level1 extends Component {
         <View style={styles.holdOpen}>
           <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
           <TargetRing hitDetected={this.state.directHit}
-                      updateScore={this.updateScore.bind(this)}/>
+                      targetDone={this.targetDone.bind(this)}/>
         </View>
 
         <TouchableWithoutFeedback

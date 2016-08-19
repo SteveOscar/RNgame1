@@ -90,7 +90,7 @@ class TargetRing extends Component {
         borderColor: 'blue',
         borderWidth: 5,
       }
-    }, this.props.updateScore(1))
+    }, this.props.targetDone())
   }
 
   render() {
