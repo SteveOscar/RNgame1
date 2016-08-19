@@ -7,7 +7,8 @@ import {
   Text,
   TextInput,
   View,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width
@@ -19,6 +20,7 @@ class Level1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pressed: false,
       txt: 'Level 1',
       shrinkPupil: false,
       directHit: false
@@ -26,16 +28,18 @@ class Level1 extends Component {
   }
 
   handlePressIn() {
-    this.setState({ txt: '' })
+    console.log('pressed')
+    this.setState({ txt: '', pressed: true })
   }
 
-  handlePressOut(result) {
-    let message = result ? 'Success' : 'Failure'
-    if(result){
-      this.setState({ directHit: !this.state.directHit, txt: message })
-    } else {
-      this.setState({ txt: message })
-    }
+  handlePressOut() {
+    this.setState({ txt: '', pressed: false })
+    // let message = result ? 'Success' : 'Failure'
+    // if(result){
+    //   this.setState({ directHit: !this.state.directHit, txt: message })
+    // } else {
+    //   this.setState({ txt: message })
+    // }
   }
 
   updateScore(points) {
@@ -52,7 +56,7 @@ class Level1 extends Component {
       <View style={styles.container}>
 
         <View style={styles.paddingLayer}>
-          <Pupil handlePressIn={this.handlePressIn.bind(this)}
+          <Pupil pressed={this.state.pressed}
                  handlePressOut={this.handlePressOut.bind(this)}
                  shrinking={this.state.shrinkPupil}
                  successFinished={this.successFinished.bind(this)}/>
@@ -63,6 +67,13 @@ class Level1 extends Component {
           <TargetRing hitDetected={this.state.directHit}
                       updateScore={this.updateScore.bind(this)}/>
         </View>
+
+        <TouchableWithoutFeedback
+          onPressIn={this.handlePressIn.bind(this)}
+          onPressOut={this.handlePressOut.bind(this)}>
+          <View style={styles.userButton}></View>
+        </TouchableWithoutFeedback>
+
 
       </View>
     );
@@ -100,6 +111,16 @@ const styles = StyleSheet.create({
     top: screenHeight*.2,
     left: 50,
     fontSize: 18
+  },
+  userButton: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: 'white',
+    position: 'absolute',
+    bottom: 40,
+    left: 40,
+    zIndex: 5000
   }
 });
 

@@ -59,7 +59,7 @@ class game1 extends Component {
 
   render() {
     let startScreen = <StartScreen startGame={this.startGame.bind(this)}/>
-    let currentBoard = this.state.score > 3 ?
+    let currentBoard = this.state.score < 3 ?
                        <Level1 updateScore={this.updateScore.bind(this)}
                                     updateBoardLevel={this.updateBoardLevel.bind(this)}
                                     boardLevel={this.state.boardLevel}/> :

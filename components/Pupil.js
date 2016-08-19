@@ -32,6 +32,7 @@ class Pupil extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(nextProps.pressed) { this.handlePressIn() }
     if(nextProps.shrinking) {
       this.shrinkCircle()
     }
@@ -65,7 +66,6 @@ class Pupil extends Component {
 
   handlePressIn() {
     this.setState({ pressed: true, cleanSlate: false }, this.growCircle.bind(this))
-    this.props.handlePressIn()
   }
 
   handlePressOut() {
@@ -108,7 +108,7 @@ class Pupil extends Component {
 
   growMore() {
     this.setState({ cleanSlate: false })
-    if(this.state.pressed) { this.growCircle() }
+    if(this.props.pressed) { this.growCircle() }
   }
 
   shrinkCircle() {
