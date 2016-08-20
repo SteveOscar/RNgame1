@@ -33,12 +33,12 @@ class TargetRing2 extends Component {
     };
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if(nextProps.hitDetected != this.state.hitTracking) {
-  //     console.log('Hit DETECTED, UGH')
-  //     this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.hitDetected != this.state.hitTracking) {
+      console.log('Hit DETECTED, UGH')
+      this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
+    }
+  }
 
   componentDidMount() {
     setTimeout(() => {
@@ -88,10 +88,10 @@ class TargetRing2 extends Component {
         height: basicWidth,
         width: basicWidth,
         borderRadius: basicWidth/2,
-        borderColor: 'blue',
+        borderColor: 'orange',
         borderWidth: 5,
       }
-    }, this.props.updateScore(1))
+    }, this.props.targetDone())
   }
 
   render() {

@@ -25,7 +25,8 @@ class Level2 extends Component {
       pressed: false,
       txt: 'Level 2',
       shrinkPupil: false,
-      directHit: false
+      directHit1: false,
+      directHit2: false
     };
   }
 
@@ -40,9 +41,11 @@ class Level2 extends Component {
 
   receiveResult(result) {
     const previousLayer = this.state.layer
+
     let message = result ? 'Success' : 'Failure'
     if(result) {
-      this.setState({ txt: 'Success', directHit: true, layer: previousLayer + 1 })
+      if(previousLayer == 1) { this.setState({ txt: 'Success', directHit1: true, layer: previousLayer + 1 }) }
+      if(previousLayer == 2) { this.setState({ txt: 'Success', directHit2: true, layer: previousLayer + 1 }) }
     }else {
       this.setState({ txt: 'Missed', layer: 1 })
       this.props.updateScore(-1)
@@ -50,7 +53,7 @@ class Level2 extends Component {
   }
 
   targetDone() {
-    this.setState({ shrinkPupil: true, directHit: false })
+    this.setState({ shrinkPupil: true, directHit1: false })
   }
 
   successFinished() {
@@ -67,7 +70,7 @@ class Level2 extends Component {
         <View style={styles.holdOpen}>
 
           <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
-          <TargetRing hitDetected={this.state.directHit}
+          <TargetRing hitDetected={this.state.directHit1}
                       targetDone={this.targetDone.bind(this)}/>
 
         </View>
@@ -81,7 +84,8 @@ class Level2 extends Component {
         </View>
 
         <View style={styles.paddingLayer}>
-          <TargetRing2/>
+          <TargetRing2 hitDetected={this.state.directHit2}
+                      targetDone={this.targetDone.bind(this)}/>
         </View>
 
         <TouchableWithoutFeedback

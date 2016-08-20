@@ -173,7 +173,6 @@ class Pupil extends Component {
           borderRadius: 25
         },
       })
-      // TODO: implemnt counter to only run pulse if level isnt beat
       this.props.successFinished()
       this.pulse()
       console.log('Should pulse')
