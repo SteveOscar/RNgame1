@@ -22,6 +22,7 @@ class Pupil2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      previousPressState: this.props.pressed,
       cleanSlate: true,
       handlingPressOut: false,
       handlingPressIn: false,
@@ -36,15 +37,23 @@ class Pupil2 extends Component {
   componentWillReceiveProps(nextProps) {
     // grow or target check coming down
     if(nextProps.pressed) {
-      console.log('handling press in?: ', this.state.handlingPressIn)
+      if(nextProps.pressed != this.state.previousPressState) {
+        console.log('press change state detected: PRESSED')
+        this.setState({ previousPressState: nextProps.pressed })
+      }
+      // console.log('still handling press in?: ', this.state.handlingPressIn)
       if(this.state.handlingPressIn) { return }
-      console.log('pupil trying to handle Press')
+      // console.log('pupil trying to handle Press')
       this.setState({ handlingPressOut: false, handlingPressIn: true}, this.handlePressIn())
     }
     // target check coming down
     if(nextProps.pressed == false) {
+      if(nextProps.pressed != this.state.previousPressState) {
+        console.log('press change state detected: RELEASED')
+        this.setState({ previousPressState: nextProps.pressed })
+      }
       this.setState({ handlingPressOut: true, handlingPressIn: false })
-      // if(this.props.layer > 1) { return }
+      if(this.props.layer > 2) { return }
       this.checkTarget1()
     }
     if(nextProps.shrinking) {
@@ -92,7 +101,6 @@ class Pupil2 extends Component {
     if(!result) { this.resetPupilOnMiss() }
     this.props.sendResult(result)
     this.props.successFinished(1)
-    this.setState({ handlingPressIn: false })
   }
 
   checkTarget1() {
@@ -103,10 +111,10 @@ class Pupil2 extends Component {
   }
 
   resetPupilOnMiss() {
-    let callback = console.log('Missed in PressOut Pupil')
+
     let animated = LayoutAnimation.Presets.easeInEaseOut
     animated.duration = 300
-    LayoutAnimation.configureNext(animated, callback);
+    LayoutAnimation.configureNext(animated);
     this.setState({
       handlingPressIn: false,
       pupil: {
