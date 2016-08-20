@@ -36,7 +36,6 @@ class Level2 extends Component {
   }
 
   handlePressOut() {
-    if(this.state.layer > 1) { return }
     this.setState({ pressed: false })
   }
 

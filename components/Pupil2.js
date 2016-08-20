@@ -24,8 +24,6 @@ class Pupil2 extends Component {
     this.state = {
       previousPressState: this.props.pressed,
       cleanSlate: true,
-      handlingPressOut: false,
-      handlingPressIn: false,
       pupil: {
         height: 0,
         width: 0,
@@ -41,20 +39,16 @@ class Pupil2 extends Component {
         console.log('press change state detected: PRESSED')
         this.setState({ previousPressState: nextProps.pressed })
       }
-      // console.log('still handling press in?: ', this.state.handlingPressIn)
-      if(this.state.handlingPressIn) { return }
-      // console.log('pupil trying to handle Press')
-      this.setState({ handlingPressOut: false, handlingPressIn: true}, this.handlePressIn())
+      this.handlePressIn()
     }
     // target check coming down
     if(nextProps.pressed == false) {
       if(nextProps.pressed != this.state.previousPressState) {
         console.log('press change state detected: RELEASED')
         this.setState({ previousPressState: nextProps.pressed })
+        if(this.props.layer > 2) { return }
+        this.checkTarget1()
       }
-      this.setState({ handlingPressOut: true, handlingPressIn: false })
-      if(this.props.layer > 2) { return }
-      this.checkTarget1()
     }
     if(nextProps.shrinking) {
       if(this.props.layer === 1) { this.shrinkCircle() }
@@ -104,7 +98,6 @@ class Pupil2 extends Component {
   }
 
   checkTarget1() {
-    if(this.state.handlingPressOut) { return }
     const result = (target1Width - this.state.pupil.width < 10) && (target1Width - this.state.pupil.width > -5)
     if(!result) { this.resetPupilOnMiss() }
     this.props.sendResult(result)
@@ -116,7 +109,6 @@ class Pupil2 extends Component {
     animated.duration = 300
     LayoutAnimation.configureNext(animated);
     this.setState({
-      handlingPressIn: false,
       pupil: {
         height: DIAMETER,
         width: DIAMETER,
@@ -142,7 +134,7 @@ class Pupil2 extends Component {
   }
 
   growMore() {
-    if(!this.state.handlingPressOut) { this.growCircle() }
+    if(this.props.pressed) { this.growCircle() }
   }
 
   shrinkCircle() {
@@ -182,7 +174,6 @@ class Pupil2 extends Component {
       this.shrinkCircle()
     }else {
       this.setState({
-        handlingPressIn: false,
         cleanSlate: true,
         pupil: {
           height: DIAMETER,
