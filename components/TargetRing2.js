@@ -21,8 +21,7 @@ class TargetRing2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ringOpened: false,
-      hitTracking: false,
+      handlingHit: false,
       targetRing: {
         height: 70,
         width: 70,
@@ -34,9 +33,9 @@ class TargetRing2 extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.hitDetected != this.state.hitTracking) {
+    if(nextProps.hitDetected != this.state.handlingHit) {
       console.log('Hit DETECTED, UGH')
-      this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
+      this.setState({ handlingHit: true }, this.borderOut())
     }
   }
 
@@ -65,7 +64,7 @@ class TargetRing2 extends Component {
   borderOut() {
     let callback = this.borderIn.bind(this);
     let animated = LayoutAnimation.Presets.linear
-    animated.duration = 500
+    animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {

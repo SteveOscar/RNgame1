@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 let TargetRing = require('./components/TargetRing')
 let TargetRing2 = require('./components/TargetRing2')
-let Pupil = require('./components/Pupil')
+let Pupil2 = require('./components/Pupil2')
 
 import {
   StyleSheet,
@@ -32,20 +32,22 @@ class Level2 extends Component {
 
   handlePressIn() {
     this.setState({ txt: '', pressed: true })
+    if(this.state.layer > 2) { this.setState({ shrinkPupil: false }) }
   }
 
   handlePressOut() {
-    if(this.state.layer === 2) { return }
+    if(this.state.layer > 1) { return }
     this.setState({ pressed: false })
   }
 
   receiveResult(result) {
     const previousLayer = this.state.layer
-
     let message = result ? 'Success' : 'Failure'
     if(result) {
-      if(previousLayer == 1) { this.setState({ txt: 'Success', directHit1: true, layer: previousLayer + 1 }) }
-      if(previousLayer == 2) { this.setState({ txt: 'Success', directHit2: true, layer: previousLayer + 1 }) }
+      if(previousLayer == 1) { this.setState({ directHit1: true, layer: previousLayer + 1 }) }
+      if(previousLayer == 2) {
+        this.setState({ txt: 'Success', directHit2: true, layer: previousLayer + 1 })
+      }
     }else {
       this.setState({ txt: 'Missed', layer: 1 })
       this.props.updateScore(-1)
@@ -56,11 +58,10 @@ class Level2 extends Component {
     this.setState({ shrinkPupil: true, directHit1: false })
   }
 
-  successFinished() {
-    const score = this.layer === 1 ? 1 : -1
+  successFinished(score) {
     this.props.updateScore(score)
     this.setState({ shrinkPupil: false })
-    if(score < 0) { this.setState({ txt: 'Missed', layer: 1 }) }
+    if(score < 0 && this.state.layer === 1) { this.setState({ txt: 'Missed', layer: 1 }) }
   }
 
   render() {
@@ -76,7 +77,7 @@ class Level2 extends Component {
         </View>
 
         <View style={styles.paddingLayer}>
-          <Pupil pressed={this.state.pressed}
+          <Pupil2 pressed={this.state.pressed}
                  sendResult={this.receiveResult.bind(this)}
                  shrinking={this.state.shrinkPupil}
                  layer={this.state.layer}

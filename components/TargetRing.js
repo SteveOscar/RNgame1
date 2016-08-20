@@ -21,7 +21,6 @@ class TargetRing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ringOpened: false,
       hitTracking: false,
       targetRing: {
         height: 50,
@@ -80,7 +79,7 @@ class TargetRing extends Component {
   borderIn() {
     let callback = this.setState({ handlingHit: false })
     let animated = LayoutAnimation.Presets.linear
-    animated.duration = 300
+    animated.duration = 500
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {
@@ -110,7 +109,13 @@ const styles = StyleSheet.create({
   target1: {
     flex: 1,
     backgroundColor: 'transparent',
-    zIndex: 0
+    // shadowColor: "orange",
+    // shadowOpacity: 0.6,
+    // shadowRadius: 2,
+    // shadowOffset: {
+    //   height: 2,
+    //   width: 0
+    // }
   },
 });
 

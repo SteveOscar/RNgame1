@@ -13,16 +13,18 @@ import {
 
 const screenHeight = Dimensions.get('window').height
 const target1Width = Dimensions.get('window').width * .75
+let target2Width = Dimensions.get('window').width * .3
 
 const DIAMETER = 50
 
-class Pupil extends Component {
+class Pupil2 extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       cleanSlate: true,
       handlingPressOut: false,
+      handlingPressIn: false,
       pupil: {
         height: 0,
         width: 0,
@@ -32,17 +34,22 @@ class Pupil extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // grow
+    // grow or target check coming down
     if(nextProps.pressed) {
-      this.setState({ handlingPressOut: false}, this.handlePressIn())
+      console.log('handling press in?: ', this.state.handlingPressIn)
+      if(this.state.handlingPressIn) { return }
+      console.log('pupil trying to handle Press')
+      this.setState({ handlingPressOut: false, handlingPressIn: true}, this.handlePressIn())
     }
     // target check coming down
     if(nextProps.pressed == false) {
-      this.setState({ handlingPressOut: true })
+      this.setState({ handlingPressOut: true, handlingPressIn: false })
+      // if(this.props.layer > 1) { return }
       this.checkTarget1()
     }
     if(nextProps.shrinking) {
-      this.shrinkCircle()
+      if(this.props.layer === 1) { this.shrinkCircle() }
+      if(this.props.layer === 2) { this.shrinkCircleSlow() }
     }
   }
 
@@ -73,7 +80,19 @@ class Pupil extends Component {
   }
 
   handlePressIn() {
-    this.setState({ cleanSlate: false }, this.growCircle())
+    console.log('Pupil2 Layer: ', this.props.layer)
+    this.setState({ cleanSlate: false })
+    if(this.props.layer === 1) { this.growCircle() }
+    if(this.props.layer === 2) { this.checkTarget2() }
+  }
+
+  checkTarget2() {
+    console.log('Checking Layer 2 in pupil')
+    const result = (target2Width - this.state.pupil.width < 10) && (target2Width - this.state.pupil.width > -5)
+    if(!result) { this.resetPupilOnMiss() }
+    this.props.sendResult(result)
+    this.props.successFinished(1)
+    this.setState({ handlingPressIn: false })
   }
 
   checkTarget1() {
@@ -89,6 +108,7 @@ class Pupil extends Component {
     animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
+      handlingPressIn: false,
       pupil: {
         height: DIAMETER,
         width: DIAMETER,
@@ -126,10 +146,9 @@ class Pupil extends Component {
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       pupil: {
-        height: size - 10,
-        width: size - 10,
-        borderRadius: borderRadius - 5,
-        backgroundColor: 'white'
+        height: size - 5,
+        width: size - 5,
+        borderRadius: borderRadius - 2.5
       }
     })
   }
@@ -155,6 +174,7 @@ class Pupil extends Component {
       this.shrinkCircle()
     }else {
       this.setState({
+        handlingPressIn: false,
         cleanSlate: true,
         pupil: {
           height: DIAMETER,
@@ -162,7 +182,7 @@ class Pupil extends Component {
           borderRadius: 25
         },
       })
-      this.props.successFinished()
+      // this.props.successFinished(-1)
       this.pulse()
       console.log('Should pulse')
     }
@@ -182,7 +202,8 @@ class Pupil extends Component {
 const styles = StyleSheet.create({
   pupilStyle: {
     backgroundColor: 'red',
+    zIndex: 0
   },
 });
 
-module.exports = Pupil;
+module.exports = Pupil2;
