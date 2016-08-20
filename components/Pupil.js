@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 
 const screenHeight = Dimensions.get('window').height
-const basicWidth = Dimensions.get('window').width * .75
+const target1Width = Dimensions.get('window').width * .75
+let target2Width = Dimensions.get('window').width * .3
 
 const DIAMETER = 50
 
@@ -32,14 +33,19 @@ class Pupil extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // grow or target check coming down
     if(nextProps.pressed) {
       this.setState({ handlingPressOut: false}, this.handlePressIn())
     }
+    // target check coming down
     if(nextProps.pressed == false) {
       this.setState({ handlingPressOut: true })
-      this.handlePressOut()
+      this.checkTarget1()
     }
-    if(nextProps.shrinking) { this.shrinkCircle() }
+    if(nextProps.shrinking) {
+      if(this.props.layer === 1) { this.shrinkCircle() }
+      if(this.props.layer === 2) { this.shrinkCircleSlow() }
+    }
   }
 
   componentDidMount() {
@@ -69,26 +75,38 @@ class Pupil extends Component {
   }
 
   handlePressIn() {
-    this.setState({ cleanSlate: false }, this.growCircle.bind(this))
+    console.log('Pupil Layer: ', this.props.layer)
+    this.setState({ cleanSlate: false })
+    if(this.props.layer === 2) { this.checkTarget2() }
+    if(this.props.layer === 1) { this.growCircle() }
   }
 
-  handlePressOut() {
-    if(this.state.handlingPressOut) { return }
-    const result = (basicWidth - this.state.pupil.width < 10) && (basicWidth - this.state.pupil.width > -5)
-    if(!result) {
-      let callback = console.log('Missed in PressOut Pupil')
-      let animated = LayoutAnimation.Presets.easeInEaseOut
-      animated.duration = 300
-      LayoutAnimation.configureNext(animated, callback);
-      this.setState({
-        pupil: {
-          height: DIAMETER,
-          width: DIAMETER,
-          borderRadius: 25,
-        }
-      })
-    }
+  checkTarget2() {
+    console.log('Checking Layer 2')
+    const result = (target2Width - this.state.pupil.width < 10) && (target2Width - this.state.pupil.width > -5)
+    if(!result) { this.resetPupilOnMiss() }
     this.props.sendResult(result)
+  }
+
+  checkTarget1() {
+    if(this.state.handlingPressOut) { return }
+    const result = (target1Width - this.state.pupil.width < 10) && (target1Width - this.state.pupil.width > -5)
+    if(!result) { this.resetPupilOnMiss() }
+    this.props.sendResult(result)
+  }
+
+  resetPupilOnMiss() {
+    let callback = console.log('Missed in PressOut Pupil')
+    let animated = LayoutAnimation.Presets.easeInEaseOut
+    animated.duration = 300
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      pupil: {
+        height: DIAMETER,
+        width: DIAMETER,
+        borderRadius: 25,
+      }
+    })
   }
 
   growCircle() {
@@ -112,6 +130,22 @@ class Pupil extends Component {
   }
 
   shrinkCircle() {
+    let size = this.state.pupil.height
+    let borderRadius = this.state.pupil.borderRadius
+    let animated = LayoutAnimation.Presets.linear
+    animated.duration = 10
+    let callback = this.shrinkMore.bind(this);
+    LayoutAnimation.configureNext(animated, callback);
+    this.setState({
+      pupil: {
+        height: size - 5,
+        width: size - 5,
+        borderRadius: borderRadius - 2.5
+      }
+    })
+  }
+
+  shrinkCircleSlow() {
     let size = this.state.pupil.height
     let borderRadius = this.state.pupil.borderRadius
     let animated = LayoutAnimation.Presets.linear

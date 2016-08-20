@@ -27,7 +27,7 @@ class TargetRing extends Component {
         height: 50,
         width: 50,
         borderRadius: 25,
-        borderColor: 'blue',
+        borderColor: 'white',
         borderWidth: 5,
       },
     };
@@ -47,8 +47,8 @@ class TargetRing extends Component {
 
   openRing() {
     let callback = this.props.targetOpen;
-    let animated = LayoutAnimation.Presets.linear
-    animated.duration = 300
+    let animated = LayoutAnimation.Presets.easeInEaseOut
+    animated.duration = 400
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {

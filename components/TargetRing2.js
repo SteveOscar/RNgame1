@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 let screenHeight = Dimensions.get('window').height
-let basicWidth = Dimensions.get('window').width * .75
+let basicWidth = Dimensions.get('window').width * .3
 
 const DIAMETER = 50
 
@@ -24,10 +24,10 @@ class TargetRing2 extends Component {
       ringOpened: false,
       hitTracking: false,
       targetRing: {
-        height: 100,
-        width: 100,
-        borderRadius: 50,
-        borderColor: 'orange',
+        height: 70,
+        width: 70,
+        borderRadius: 35,
+        borderColor: 'white',
         borderWidth: 5,
       },
     };
@@ -41,22 +41,22 @@ class TargetRing2 extends Component {
   // }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.openRing()
-    // }, 1000);
+    setTimeout(() => {
+      this.openRing()
+    }, 1200);
   }
 
   openRing() {
     let callback = this.props.targetOpen;
-    let animated = LayoutAnimation.Presets.linear
-    animated.duration = 300
+    let animated = LayoutAnimation.Presets.spring
+    animated.duration = 500
     LayoutAnimation.configureNext(animated, callback);
     this.setState({
       targetRing: {
         height: basicWidth,
         width: basicWidth,
         borderRadius: basicWidth / 2,
-        borderColor: 'blue',
+        borderColor: 'orange',
         borderWidth: 5
       },
     })

@@ -33,11 +33,6 @@ class Level1 extends Component {
 
   handlePressOut() {
     this.setState({ pressed: false })
-    // if(result){
-    //   this.setState({ directHit: !this.state.directHit, txt: message })
-    // } else {
-    //   this.setState({ txt: message })
-    // }
   }
 
   receiveResult(result) {
