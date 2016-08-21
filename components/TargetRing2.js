@@ -35,7 +35,7 @@ class TargetRing2 extends Component {
   componentWillReceiveProps(nextProps) {
     if(nextProps.hitDetected != this.state.handlingHit) {
       console.log('Hit DETECTED, UGH')
-      this.setState({ handlingHit: true }, this.borderOut())
+      this.setState({ handlingHit: nextProps.hitDetected }, this.borderOut())
     }
   }
 
@@ -78,7 +78,7 @@ class TargetRing2 extends Component {
   }
 
   borderIn() {
-    let callback = this.setState({ handlingHit: false })
+    let callback = this.setState({ handlingHit: false }, this.props.targetDone())
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
@@ -90,7 +90,7 @@ class TargetRing2 extends Component {
         borderColor: 'orange',
         borderWidth: 5,
       }
-    }, this.props.targetDone())
+    })
   }
 
   render() {

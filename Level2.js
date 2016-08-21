@@ -46,6 +46,7 @@ class Level2 extends Component {
       if(previousLayer == 1) { this.setState({ directHit1: true, layer: previousLayer + 1 }) }
       if(previousLayer == 2) {
         this.setState({ txt: 'Success', directHit2: true, layer: previousLayer + 1 })
+        this.props.updateScore(1)
       }
     }else {
       this.setState({ txt: 'Missed', layer: 1 })
@@ -54,13 +55,12 @@ class Level2 extends Component {
   }
 
   targetDone() {
-    this.setState({ shrinkPupil: true, directHit1: false })
+    this.setState({ shrinkPupil: true, directHit1: false, directHit2: false })
   }
 
-  successFinished(score) {
-    this.props.updateScore(score)
+  successFinished(result) {
     this.setState({ shrinkPupil: false })
-    if(score < 0 && this.state.layer === 1) { this.setState({ txt: 'Missed', layer: 1 }) }
+    if( !result ) { this.setState({ txt: 'Missed', layer: 1 }) }
   }
 
   render() {
