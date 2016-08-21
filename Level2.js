@@ -25,6 +25,7 @@ class Level2 extends Component {
     this.state = {
       layer: 1,
       hit: true,
+      miss: false,
       pressed: false,
       txt: 'Level 2',
       shrinkPupil: false,
@@ -51,6 +52,10 @@ class Level2 extends Component {
   handleFailure() {
     this.setState({ hit: false, text: 'Failure', layer: 1 })
     this.props.updateScore(-1)
+  }
+
+  receivePupilFinished() {
+    this.setState({ hit: true, miss: false })
   }
 
   handleSuccess() {
@@ -89,6 +94,7 @@ class Level2 extends Component {
                  shrinking={this.state.shrinkPupil}
                  hit={this.state.hit}
                  sendStatus={this.receiveStatus.bind(this)}
+                 pupilFinished={this.receivePupilFinished.bind(this)}
                  successFinished={this.successFinished.bind(this)}/>
         </View>
 

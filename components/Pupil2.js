@@ -102,13 +102,18 @@ class Pupil2 extends Component {
   checkTarget2() {
     const result = (target2Width - this.state.pupil.width < 10) && (target2Width - this.state.pupil.width > -5)
     if(!result) { this.resetPupilOnMiss() }
-    this.props.sendStatus(result)
+    // this.props.sendStatus(result)
+  }
+
+  pupilFinished() {
+    this.setState({ previousHitState: true })
+    this.props.pupilFinished()
   }
 
   resetPupilOnMiss() {
     let animated = LayoutAnimation.Presets.easeInEaseOut
     animated.duration = 300
-    LayoutAnimation.configureNext(animated, this.props.successFinished(-1));
+    LayoutAnimation.configureNext(animated, this.pupilFinished());
     this.setState({
       pupil: {
         height: DIAMETER,
