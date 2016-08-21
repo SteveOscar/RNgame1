@@ -22,6 +22,7 @@ class Pupil2 extends Component {
     this.state = {
       previousPressState: this.props.pressed,
       previousHitState: this.props.hit,
+      previousMissState: this.props.miss,
       cleanSlate: true,
       pupil: {
         height: 0,
@@ -44,6 +45,7 @@ class Pupil2 extends Component {
     if(nextProps.pressed == false) {
       if(nextProps.pressed != this.state.previousPressState) {
         console.log('press change state detected: RELEASED')
+        if(this.props.layer > 2) { return }
         this.setState({ previousPressState: nextProps.pressed })
         // this.checkTarget1()
         this.props.sendStatus(this.state.pupil.width)
@@ -51,20 +53,25 @@ class Pupil2 extends Component {
     }
 
     if(nextProps.shrinking) {
-      if(this.props.layer === 1) { this.shrinkCircle() }
-      if(this.props.layer === 2) { this.shrinkCircleSlow() }
+      // if(this.props.layer === 1) { this.shrinkCircle() }
+      // if(this.props.layer === 2) { this.shrinkCircleSlow() }
+      this.shrinkCircleSlow()
     }
 
-    if(nextProps.hit == false) {
-      if(nextProps.hit != this.state.previousHitState) {
-        debugger
-        this.setState({ previousHitState: nextProps.hit })
+    if(nextProps.miss == true) {
+      if(nextProps.miss != this.state.previousMissState) {
+        // this.setState({ previousMissState: nextProps.miss })
         this.resetPupilOnMiss()
       }
     }
-    // if(nextProps.hit) {
-    //   console.log('hit registered in pupil')
-    // }
+
+    if(nextProps.hit == true) {
+      if(nextProps.hit != this.state.previousHitState) {
+        console.log('HIT registered')
+        // this.setState({ previousHitState: nextProps.hit })
+        // this.resetPupilOnMiss()
+      }
+    }
   }
 
   componentDidMount() {
@@ -95,7 +102,9 @@ class Pupil2 extends Component {
 
   handlePressIn() {
     this.setState({ cleanSlate: false })
-    this.growCircle()
+    if(this.props.hit && this.props.shrinking) {
+      this.props.sendStatus(this.state.pupil.width)
+    }else { this.growCircle() }
     // if(this.props.layer === 2) { this.checkTarget2() }
   }
 
@@ -106,7 +115,7 @@ class Pupil2 extends Component {
   }
 
   pupilFinished() {
-    this.setState({ previousHitState: true })
+    this.setState({ previousMissState: false })
     this.props.pupilFinished()
   }
 

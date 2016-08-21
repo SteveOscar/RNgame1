@@ -44,13 +44,18 @@ class Level2 extends Component {
   }
 
   receiveStatus(pupilSize) {
-    const result = (target1Width - pupilSize < 10) && (target1Width - pupilSize > -5)
+    let result
+    if(this.state.layer === 1) {
+      result = (target1Width - pupilSize < 10) && (target1Width - pupilSize > -5)
+    }else {
+      result = (target2Width - pupilSize < 10) && (target2Width - pupilSize > -5)
+    }
     if(result) { this.handleSuccess() }
     if(!result) { this.handleFailure() }
   }
 
   handleFailure() {
-    this.setState({ hit: false, text: 'Failure', layer: 1 })
+    this.setState({ hit: false, miss: true, txt: 'Failure', layer: 1 })
     this.props.updateScore(-1)
   }
 
@@ -59,10 +64,10 @@ class Level2 extends Component {
   }
 
   handleSuccess() {
-    debugger
     const previousLayer = this.state.layer
     if(previousLayer == 1) { this.setState({ hit: true, directHit1: true, layer: previousLayer + 1 }) }
     if(previousLayer == 2) {
+      debugger
       this.setState({ hit: true, txt: 'Success', directHit2: true, layer: previousLayer + 1 })
       this.props.updateScore(1)
     }
@@ -72,10 +77,10 @@ class Level2 extends Component {
     this.setState({ shrinkPupil: true, directHit1: false, directHit2: false })
   }
 
-  successFinished(result) {
-    this.setState({ shrinkPupil: false })
-    if( !result ) { this.setState({ txt: 'Missed', layer: 1 }) }
-  }
+  // successFinished(result) {
+  //   this.setState({ shrinkPupil: false })
+  //   if( !result ) { this.setState({ txt: 'Missed', layer: 1 }) }
+  // }
 
   render() {
     return (
@@ -93,9 +98,10 @@ class Level2 extends Component {
           <Pupil2 pressed={this.state.pressed}
                  shrinking={this.state.shrinkPupil}
                  hit={this.state.hit}
+                 miss={this.state.miss}
+                 layer={this.state.layer}
                  sendStatus={this.receiveStatus.bind(this)}
-                 pupilFinished={this.receivePupilFinished.bind(this)}
-                 successFinished={this.successFinished.bind(this)}/>
+                 pupilFinished={this.receivePupilFinished.bind(this)}/>
         </View>
 
         <View style={styles.paddingLayer}>
