@@ -14,6 +14,8 @@ import {
 
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
+const target1Width = Dimensions.get('window').width * .75
+let target2Width = Dimensions.get('window').width * .3
 
 
 class Level2 extends Component {
@@ -22,6 +24,7 @@ class Level2 extends Component {
     super(props);
     this.state = {
       layer: 1,
+      hit: true,
       pressed: false,
       txt: 'Level 2',
       shrinkPupil: false,
@@ -39,18 +42,24 @@ class Level2 extends Component {
     this.setState({ pressed: false })
   }
 
-  receiveResult(result) {
+  receiveStatus(pupilSize) {
+    const result = (target1Width - pupilSize < 10) && (target1Width - pupilSize > -5)
+    if(result) { this.handleSuccess() }
+    if(!result) { this.handleFailure() }
+  }
+
+  handleFailure() {
+    this.setState({ hit: false, text: 'Failure', layer: 1 })
+    this.props.updateScore(-1)
+  }
+
+  handleSuccess() {
+    debugger
     const previousLayer = this.state.layer
-    let message = result ? 'Success' : 'Failure'
-    if(result) {
-      if(previousLayer == 1) { this.setState({ directHit1: true, layer: previousLayer + 1 }) }
-      if(previousLayer == 2) {
-        this.setState({ txt: 'Success', directHit2: true, layer: previousLayer + 1 })
-        this.props.updateScore(1)
-      }
-    }else {
-      this.setState({ txt: 'Missed', layer: 1 })
-      this.props.updateScore(-1)
+    if(previousLayer == 1) { this.setState({ hit: true, directHit1: true, layer: previousLayer + 1 }) }
+    if(previousLayer == 2) {
+      this.setState({ hit: true, txt: 'Success', directHit2: true, layer: previousLayer + 1 })
+      this.props.updateScore(1)
     }
   }
 
@@ -77,9 +86,9 @@ class Level2 extends Component {
 
         <View style={styles.paddingLayer}>
           <Pupil2 pressed={this.state.pressed}
-                 sendResult={this.receiveResult.bind(this)}
                  shrinking={this.state.shrinkPupil}
-                 layer={this.state.layer}
+                 hit={this.state.hit}
+                 sendStatus={this.receiveStatus.bind(this)}
                  successFinished={this.successFinished.bind(this)}/>
         </View>
 

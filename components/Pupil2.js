@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 
 const screenHeight = Dimensions.get('window').height
-const target1Width = Dimensions.get('window').width * .75
-let target2Width = Dimensions.get('window').width * .3
 
 const DIAMETER = 50
 
@@ -23,6 +21,7 @@ class Pupil2 extends Component {
     super(props);
     this.state = {
       previousPressState: this.props.pressed,
+      previousHitState: this.props.hit,
       cleanSlate: true,
       pupil: {
         height: 0,
@@ -33,27 +32,39 @@ class Pupil2 extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // grow or target check coming down
+    // PressIn, grow or target check coming down
     if(nextProps.pressed) {
       if(nextProps.pressed != this.state.previousPressState) {
         console.log('press change state detected: PRESSED')
         this.setState({ previousPressState: nextProps.pressed })
+        this.handlePressIn()
       }
-      this.handlePressIn()
     }
-    // target check coming down
+    // PressOut, send size
     if(nextProps.pressed == false) {
       if(nextProps.pressed != this.state.previousPressState) {
         console.log('press change state detected: RELEASED')
         this.setState({ previousPressState: nextProps.pressed })
-        if(this.props.layer > 2) { return }
-        this.checkTarget1()
+        // this.checkTarget1()
+        this.props.sendStatus(this.state.pupil.width)
       }
     }
+
     if(nextProps.shrinking) {
       if(this.props.layer === 1) { this.shrinkCircle() }
       if(this.props.layer === 2) { this.shrinkCircleSlow() }
     }
+
+    if(nextProps.hit == false) {
+      if(nextProps.hit != this.state.previousHitState) {
+        debugger
+        this.setState({ previousHitState: nextProps.hit })
+        this.resetPupilOnMiss()
+      }
+    }
+    // if(nextProps.hit) {
+    //   console.log('hit registered in pupil')
+    // }
   }
 
   componentDidMount() {
@@ -83,23 +94,15 @@ class Pupil2 extends Component {
   }
 
   handlePressIn() {
-    console.log('Pupil2 Layer: ', this.props.layer)
     this.setState({ cleanSlate: false })
-    if(this.props.layer === 1) { this.growCircle() }
-    if(this.props.layer === 2) { this.checkTarget2() }
+    this.growCircle()
+    // if(this.props.layer === 2) { this.checkTarget2() }
   }
 
   checkTarget2() {
-    console.log('Checking Layer 2 in pupil')
     const result = (target2Width - this.state.pupil.width < 10) && (target2Width - this.state.pupil.width > -5)
     if(!result) { this.resetPupilOnMiss() }
-    this.props.sendResult(result)
-  }
-
-  checkTarget1() {
-    const result = (target1Width - this.state.pupil.width < 10) && (target1Width - this.state.pupil.width > -5)
-    if(!result) { this.resetPupilOnMiss() }
-    this.props.sendResult(result)
+    this.props.sendStatus(result)
   }
 
   resetPupilOnMiss() {
@@ -122,6 +125,7 @@ class Pupil2 extends Component {
     animated.duration = 15
     let callback = this.growMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
+    console.log('hit growCircle()')
     this.setState({
       pupil: {
         height: size + 5,
@@ -179,7 +183,7 @@ class Pupil2 extends Component {
           borderRadius: 25
         },
       })
-      this.props.sendResult(false)
+      this.props.sendStatus(false)
       this.pulse()
       console.log('Should pulse')
     }
