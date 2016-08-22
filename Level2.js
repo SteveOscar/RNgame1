@@ -24,7 +24,6 @@ class Level2 extends Component {
     super(props);
     this.state = {
       layer: 1,
-      hit: true,
       miss: false,
       pressed: false,
       txt: 'Level 2',
@@ -46,29 +45,31 @@ class Level2 extends Component {
   receiveStatus(pupilSize) {
     let result
     if(this.state.layer === 1) {
-      result = (target1Width - pupilSize < 10) && (target1Width - pupilSize > -5)
+      result = (target1Width - pupilSize < 15) && (target1Width - pupilSize > -15)
     }else {
-      result = (target2Width - pupilSize < 10) && (target2Width - pupilSize > -5)
+      result = (target2Width - pupilSize < 15) && (target2Width - pupilSize > -15)
     }
     if(result) { this.handleSuccess() }
     if(!result) { this.handleFailure() }
   }
 
   handleFailure() {
-    this.setState({ hit: false, miss: true, txt: 'Failure', layer: 1 })
+    console.log('should not trigger on success')
+    this.setState({ miss: true, txt: 'Failure', layer: 1 })
     this.props.updateScore(-1)
   }
 
   receivePupilFinished() {
-    this.setState({ hit: true, miss: false })
+    this.setState({ miss: false, shrinkPupil: false })
   }
 
   handleSuccess() {
     const previousLayer = this.state.layer
-    if(previousLayer == 1) { this.setState({ hit: true, directHit1: true, layer: previousLayer + 1 }) }
+    if(previousLayer == 1) {
+      this.setState({ directHit1: true, layer: 2 })
+    }
     if(previousLayer == 2) {
-      debugger
-      this.setState({ hit: true, txt: 'Success', directHit2: true, layer: previousLayer + 1 })
+      this.setState({ txt: 'Success', directHit2: true, layer: 1 }, this.receivePupilFinished())
       this.props.updateScore(1)
     }
   }
@@ -97,7 +98,6 @@ class Level2 extends Component {
         <View style={styles.paddingLayer}>
           <Pupil2 pressed={this.state.pressed}
                  shrinking={this.state.shrinkPupil}
-                 hit={this.state.hit}
                  miss={this.state.miss}
                  layer={this.state.layer}
                  sendStatus={this.receiveStatus.bind(this)}
