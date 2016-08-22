@@ -21,7 +21,7 @@ class TargetRing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hitTracking: false,
+      previousHitDetected: false,
       targetRing: {
         height: 50,
         width: 50,
@@ -33,8 +33,8 @@ class TargetRing extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.hitDetected != this.state.hitTracking) {
-      this.setState({ hitTracking: nextProps.hitDetected }, this.borderOut())
+    if(nextProps.hitDetected != this.state.previousHitDetected) {
+      this.setState({ previousHitDetected: nextProps.hitDetected }, this.borderOut())
     }
   }
 
