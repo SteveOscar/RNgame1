@@ -78,11 +78,6 @@ class Level2 extends Component {
     this.setState({ shrinkPupil: true, directHit1: false, directHit2: false })
   }
 
-  // successFinished(result) {
-  //   this.setState({ shrinkPupil: false })
-  //   if( !result ) { this.setState({ txt: 'Missed', layer: 1 }) }
-  // }
-
   render() {
     return (
       <View style={styles.container}>

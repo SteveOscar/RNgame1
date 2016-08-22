@@ -21,7 +21,6 @@ class Pupil2 extends Component {
     super(props);
     this.state = {
       previousPressState: this.props.pressed,
-      previousHitState: this.props.hit,
       previousMissState: this.props.miss,
       cleanSlate: true,
       pupil: {
@@ -37,17 +36,17 @@ class Pupil2 extends Component {
     if(nextProps.pressed) {
       if(nextProps.pressed != this.state.previousPressState) {
         console.log('PRESSED')
-        this.setState({ previousPressState: nextProps.pressed })
-        this.handlePressIn()
+        this.setState({ previousPressState: nextProps.pressed, cleanSlate: false }, this.handlePressIn())
       }
     }
     // PressOut, send size
     if(nextProps.pressed == false) {
       if(nextProps.pressed != this.state.previousPressState) {
-        console.log('layer in pupil: ', this.props.layer)
-        if(this.props.layer > 1) { return }
-        console.log('RELEASED')
         this.setState({ previousPressState: nextProps.pressed })
+        console.log('RELEASED')
+        if(this.props.layer > 1 || this.state.cleanSlate) {
+          debugger
+          return }
         // blocks against press out on second target
         if(!this.props.shrinking) { this.props.sendStatus(this.state.pupil.width) }
       }
@@ -62,17 +61,9 @@ class Pupil2 extends Component {
     if(nextProps.miss == true) {
       if(nextProps.miss != this.state.previousMissState) {
         this.setState({ previousMissState: nextProps.miss })
-        this.resetPupilOnMiss()
+        this.resetSelf()
       }
     }
-
-    // if(nextProps.hit == true) {
-    //   if(nextProps.hit != this.state.previousHitState) {
-    //     console.log('HIT registered')
-    //     // this.setState({ previousHitState: nextProps.hit })
-    //     // this.resetPupilOnMiss()
-    //   }
-    // }
   }
 
   componentDidMount() {
@@ -102,22 +93,24 @@ class Pupil2 extends Component {
   }
 
   handlePressIn() {
-    this.setState({ cleanSlate: false })
     if(this.props.shrinking) {
       this.props.sendStatus(this.state.pupil.width)
     }else { this.growCircle() }
   }
 
   pupilFinished() {
-    this.setState({ previousMissState: false })
     this.props.pupilFinished()
+    this.pulse()
+    console.log('Should pulse')
   }
 
-  resetPupilOnMiss() {
+  resetSelf() {
     let animated = LayoutAnimation.Presets.easeInEaseOut
     animated.duration = 300
     LayoutAnimation.configureNext(animated, this.pupilFinished());
     this.setState({
+      previousMissState: false,
+      cleanSlate: true,
       pupil: {
         height: DIAMETER,
         width: DIAMETER,
@@ -133,7 +126,6 @@ class Pupil2 extends Component {
     animated.duration = 15
     let callback = this.growMore.bind(this);
     LayoutAnimation.configureNext(animated, callback);
-    console.log('hit growCircle()')
     this.setState({
       pupil: {
         height: size + 5,
@@ -183,16 +175,7 @@ class Pupil2 extends Component {
     if(this.state.pupil.width > 40) {
       this.shrinkCircle()
     }else {
-      this.setState({
-        cleanSlate: true,
-        pupil: {
-          height: DIAMETER,
-          width: DIAMETER,
-          borderRadius: 25
-        },
-      })
-      this.pulse()
-      console.log('Should pulse')
+      this.resetSelf()
     }
   }
 

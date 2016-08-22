@@ -21,7 +21,7 @@ class TargetRing2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      handlingHit: false,
+      previousHitDetected: false,
       targetRing: {
         height: 70,
         width: 70,
@@ -33,9 +33,9 @@ class TargetRing2 extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.hitDetected != this.state.handlingHit) {
-      console.log('Hit DETECTED, UGH')
-      this.setState({ handlingHit: nextProps.hitDetected }, this.borderOut())
+    if(nextProps.hitDetected && nextProps.hitDetected != this.state.previousHitDetected) {
+      console.log('Target2 Hit DETECTED, UGH')
+      this.setState({ previousHitDetected: nextProps.hitDetected }, this.borderOut())
     }
   }
 
@@ -78,7 +78,7 @@ class TargetRing2 extends Component {
   }
 
   borderIn() {
-    let callback = this.setState({ handlingHit: false }, this.props.targetDone())
+    let callback = this.setState({ previousHitDetected: false }, this.props.targetDone())
     let animated = LayoutAnimation.Presets.linear
     animated.duration = 300
     LayoutAnimation.configureNext(animated, callback);
