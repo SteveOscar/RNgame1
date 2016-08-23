@@ -89,7 +89,11 @@ class TargetRing extends Component {
         borderColor: 'blue',
         borderWidth: 5,
       }
-    }, this.props.targetDone())
+    }, this.finishAnimation())
+  }
+
+  finishAnimation() {
+    this.setState({ previousHitDetected: false }, this.props.targetDone())
   }
 
   render() {

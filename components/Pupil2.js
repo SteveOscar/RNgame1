@@ -20,8 +20,8 @@ class Pupil2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      previousPressState: this.props.pressed,
-      previousMissState: this.props.miss,
+      previousPressState: false,
+      previousMissState: false,
       previousShrinkingState: false,
       cleanSlate: true,
       pupil: {
@@ -36,7 +36,7 @@ class Pupil2 extends Component {
     // PressIn, grow or target check coming down
     if(nextProps.pressed) {
       if(nextProps.pressed != this.state.previousPressState) {
-        console.log('PRESSED')
+        console.log('PRESSED, layer: ', this.props.layer)
         this.setState({ previousPressState: nextProps.pressed, cleanSlate: false }, this.handlePressIn())
       }
     }
@@ -44,9 +44,8 @@ class Pupil2 extends Component {
     if(nextProps.pressed == false) {
       if(nextProps.pressed != this.state.previousPressState) {
         this.setState({ previousPressState: nextProps.pressed })
-        console.log('RELEASED')
-        if(this.props.layer > 1 || this.state.cleanSlate) {
-          return }
+        console.log('RELEASED, layer: ', this.props.layer)
+        if(this.props.layer > 1 || this.state.cleanSlate) { return }
         // blocks against press out on second target
         if(!this.props.shrinking) { this.props.sendStatus(this.state.pupil.width) }
       }
@@ -64,6 +63,7 @@ class Pupil2 extends Component {
     if(nextProps.miss == true) {
       if(nextProps.miss != this.state.previousMissState) {
         this.setState({ previousMissState: nextProps.miss })
+        console.log('MISS DETECTED')
         this.resetSelf()
       }
     }
@@ -96,7 +96,7 @@ class Pupil2 extends Component {
   }
 
   handlePressIn() {
-    if(this.props.shrinking) {
+    if(this.props.shrinking && this.props.layer > 1) {
       this.props.sendStatus(this.state.pupil.width)
     }else { this.growCircle() }
   }
@@ -112,7 +112,9 @@ class Pupil2 extends Component {
     animated.duration = 300
     LayoutAnimation.configureNext(animated, this.pupilFinished());
     this.setState({
+      previousPressState: false,
       previousMissState: false,
+      previousShrinkingState: false,
       cleanSlate: true,
       pupil: {
         height: DIAMETER,
@@ -178,7 +180,8 @@ class Pupil2 extends Component {
     if(this.state.pupil.width > 40) {
       this.shrinkCircle()
     }else {
-      this.props.sendStatus(this.state.pupil.width)
+      // figure this shit out
+      // this.props.sendStatus(this.state.pupil.width)
       this.resetSelf()
     }
   }

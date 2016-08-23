@@ -55,12 +55,13 @@ class Level2 extends Component {
 
   handleFailure() {
     console.log('should not trigger on success')
-    this.setState({ miss: true, txt: 'Failure', layer: 1 })
+    this.setState({ miss: true, txt: 'Failure', layer: 1, shrinkPupil: false })
     this.props.updateScore(-1)
   }
 
   receivePupilFinished() {
-    this.setState({ miss: false, shrinkPupil: false })
+    console.log('Level received Pupil Finished')
+    this.setState({ miss: false, shrinkPupil: false, layer: 1 })
   }
 
   handleSuccess() {
@@ -69,7 +70,7 @@ class Level2 extends Component {
       this.setState({ directHit1: true, layer: 2 })
     }
     if(previousLayer == 2) {
-      this.setState({ txt: 'Success', directHit2: true, layer: 1 }, this.receivePupilFinished())
+      this.setState({ txt: 'Success', directHit2: true })
       this.props.updateScore(1)
     }
   }
