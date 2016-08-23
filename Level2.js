@@ -27,6 +27,7 @@ class Level2 extends Component {
       miss: false,
       pressed: false,
       txt: 'Level 2',
+      handlingSuccess: false,
       shrinkPupil: false,
       directHit1: false,
       directHit2: false
@@ -61,7 +62,7 @@ class Level2 extends Component {
 
   receivePupilFinished() {
     console.log('Level received Pupil Finished')
-    this.setState({ miss: false, shrinkPupil: false, layer: 1 })
+    this.setState({ miss: false, shrinkPupil: false, layer: 1, handlingSuccess: false })
   }
 
   handleSuccess() {
@@ -70,19 +71,16 @@ class Level2 extends Component {
       this.setState({ directHit1: true, layer: 2 })
     }
     if(previousLayer == 2) {
-      this.setState({ txt: 'Success', directHit2: true })
+      this.setState({ txt: 'Success', directHit2: true, layer: 3 })
       this.props.updateScore(1)
     }
   }
 
   targetDone() {
-    this.setState({ shrinkPupil: true, directHit1: false, directHit2: false })
+    const check = this.state.layer === 2
+    console.log('Target done, layer: ', this.state.layer)
+    this.setState({ shrinkPupil: check, directHit1: false, directHit2: false, handlingSuccess: this.state.layer === 3 })
   }
-
-  // successFinished(result) {
-  //   this.setState({ shrinkPupil: false })
-  //   if( !result ) { this.setState({ txt: 'Missed', layer: 1 }) }
-  // }
 
   render() {
     return (
@@ -102,6 +100,7 @@ class Level2 extends Component {
                  miss={this.state.miss}
                  layer={this.state.layer}
                  sendStatus={this.receiveStatus.bind(this)}
+                 handlingSuccess={this.state.handlingSuccess}
                  pupilFinished={this.receivePupilFinished.bind(this)}/>
         </View>
 

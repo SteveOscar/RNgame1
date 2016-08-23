@@ -23,6 +23,7 @@ class Pupil2 extends Component {
       previousPressState: false,
       previousMissState: false,
       previousShrinkingState: false,
+      previousSuccessState: false,
       cleanSlate: true,
       pupil: {
         height: 0,
@@ -54,9 +55,17 @@ class Pupil2 extends Component {
     if(nextProps.shrinking) {
       if(nextProps.shrinking != this.state.previousShrinkingState) {
         this.setState({ previousShrinkingState: nextProps.shrinking })
-        // if(this.props.layer === 1) { this.shrinkCircle() }
-        // if(this.props.layer === 2) { this.shrinkCircleSlow() }
+        console.log('HIT nextProps SHRINKING')
         this.shrinkCircle()
+      }
+    }
+
+    // maybe delete this?
+    if(nextProps.handlingSuccess) {
+      if(nextProps.handlingSuccess != this.state.previousSuccessState) {
+        this.setState({ previousShrinkingState: nextProps.shrinking })
+        console.log('SUCCESS DETECTED')
+        this.resetSelf()
       }
     }
 
@@ -92,6 +101,7 @@ class Pupil2 extends Component {
   }
 
   continuePulse() {
+    console.log('Should pulse, cleanSlate: ', this.state.cleanSlate)
     if(this.state.cleanSlate) { this.pulse() }
   }
 
@@ -104,7 +114,6 @@ class Pupil2 extends Component {
   pupilFinished() {
     this.props.pupilFinished()
     this.pulse()
-    console.log('Should pulse')
   }
 
   resetSelf() {
@@ -160,29 +169,14 @@ class Pupil2 extends Component {
     })
   }
 
-  shrinkCircleSlow() {
-    let size = this.state.pupil.height
-    let borderRadius = this.state.pupil.borderRadius
-    let animated = LayoutAnimation.Presets.linear
-    animated.duration = 15
-    let callback = this.shrinkMore.bind(this);
-    LayoutAnimation.configureNext(animated, callback);
-    this.setState({
-      pupil: {
-        height: size - 20,
-        width: size - 20,
-        borderRadius: borderRadius - 10
-      }
-    })
-  }
-
   shrinkMore() {
-    if(this.state.pupil.width > 40) {
+    if(this.state.pupil.width > 40 && this.props.shrinking) {
       this.shrinkCircle()
     }else {
       // figure this shit out
-      // this.props.sendStatus(this.state.pupil.width)
-      this.resetSelf()
+      if(this.props.layer == 2){
+        this.props.sendStatus(this.state.pupil.width)
+      }
     }
   }
 
