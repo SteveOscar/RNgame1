@@ -1,4 +1,3 @@
-let Pupil = require('./Pupil')
 import React, { Component } from 'react';
 import {
   StyleSheet,

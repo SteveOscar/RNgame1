@@ -16,7 +16,7 @@ const target1Width = Dimensions.get('window').width * .75
 
 const DIAMETER = 50
 
-class Pupil extends Component {
+class Pupil1 extends Component {
 
   constructor(props) {
     super(props);
@@ -78,7 +78,7 @@ class Pupil extends Component {
 
   checkTarget1() {
     if(this.state.handlingPressOut) { return }
-    const result = (target1Width - this.state.pupil.width < 10) && (target1Width - this.state.pupil.width > -5)
+    const result = (target1Width - this.state.pupil.width < 10)
     if(!result) { this.resetPupilOnMiss() }
     this.props.sendResult(result)
   }
@@ -185,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = Pupil;
+module.exports = Pupil1;

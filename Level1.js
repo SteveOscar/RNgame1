@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-let TargetRing = require('./components/TargetRing')
-let Pupil = require('./components/Pupil')
+let TargetRing_L1 = require('./components/TargetRing_L1')
+let Pupil1 = require('./components/Pupil1')
 
 import {
   StyleSheet,
@@ -59,7 +59,7 @@ class Level1 extends Component {
       <View style={styles.container}>
 
         <View style={styles.paddingLayer}>
-          <Pupil pressed={this.state.pressed}
+          <Pupil1 pressed={this.state.pressed}
                  sendResult={this.receiveResult.bind(this)}
                  shrinking={this.state.shrinkPupil}
                  successFinished={this.successFinished.bind(this)}/>
@@ -67,7 +67,7 @@ class Level1 extends Component {
 
         <View style={styles.holdOpen}>
           <Text style={styles.boardText}>{this.state.txt || '...'}</Text>
-          <TargetRing hitDetected={this.state.directHit}
+          <TargetRing_L1 hitDetected={this.state.directHit}
                       targetDone={this.targetDone.bind(this)}/>
         </View>
 

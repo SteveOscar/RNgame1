@@ -15,7 +15,7 @@ let basicWidth = Dimensions.get('window').width * .75
 
 const DIAMETER = 50
 
-class TargetRing extends Component {
+class TargetRing_L1 extends Component {
 
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ class TargetRing extends Component {
         width: basicWidth,
         borderRadius: basicWidth / 2,
         borderColor: 'blue',
-        borderWidth: 5
+        borderWidth: 10
       },
     })
   }
@@ -86,7 +86,7 @@ class TargetRing extends Component {
         width: basicWidth,
         borderRadius: basicWidth/2,
         borderColor: 'blue',
-        borderWidth: 5,
+        borderWidth: 10,
       }
     }, this.finishAnimation())
   }
@@ -122,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = TargetRing;
+module.exports = TargetRing_L1;
