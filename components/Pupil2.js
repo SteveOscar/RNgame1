@@ -42,7 +42,7 @@ class Pupil2 extends Component {
       }
     }
     // PressOut, send size
-    if(nextProps.pressed == false) {
+    if(!nextProps.pressed) {
       if(nextProps.pressed != this.state.previousPressState) {
         this.setState({ previousPressState: nextProps.pressed })
         console.log('RELEASED, layer: ', this.props.layer)
@@ -121,7 +121,6 @@ class Pupil2 extends Component {
     animated.duration = 300
     LayoutAnimation.configureNext(animated, this.pupilFinished());
     this.setState({
-      previousPressState: false,
       previousMissState: false,
       previousShrinkingState: false,
       cleanSlate: true,
